@@ -95,11 +95,13 @@ function handleMouseDown(evt) {
   evt.preventDefault();
   pressing.mouse = true;
   mouse_pos = clickCoord(evt);
+  simulatePress();
 }
 
 function handleMouseUp(evt) {
   pressing.mouse = false;
   input_lock.mouse = false;
+  simulateRelease();
 }
 
 function clickCoord(evt) {
@@ -130,11 +132,13 @@ function handleTouchStart(evt) {
   evt.preventDefault();
   pressing.mouse = true;
   mouse_pos = touchCoord(evt);
+  simulatePress();
 }
 
 function handleTouchEnd(evt) {
   pressing.mouse = false;
   input_lock.mouse = false;
+  simulateRelease();
 }
 
 function touchCoord(evt) {
@@ -148,4 +152,20 @@ function touchCoord(evt) {
   cany /= SCALE;
   
   return {x:canx, y:cany}  
+}
+
+function simulatePress() {
+  if (mouse_pos.x < VIEW_WIDTH/2) {
+    pressing.left = true;
+  }
+  else if (mouse_pos.x >= VIEW_WIDTH/2) {
+    pressing.right = true;
+  }
+}
+
+function simulateRelease() {
+  pressing.left = false;
+  pressing.right = false;
+  input_lock.left = false;
+  input_lock.right = false;
 }
