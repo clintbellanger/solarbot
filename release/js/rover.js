@@ -26,7 +26,7 @@
 
    // rover current state   
    rover.x = 56;
-   rover.y = 80;
+   rover.y = 64;
    rover.speed_x = 0.0;
    
    // wheel movement properties
@@ -63,11 +63,14 @@
    // move
    rover.x += rover.speed_x;
    
+   rover.screen_wrap();
+   
    // handle wheel animation
    rover.accelerate_wheel(rover.wheel_left);
    rover.accelerate_wheel(rover.wheel_right);
    
    rover.animate_head();
+   
  }
  
  rover.accelerate = function() {
@@ -123,6 +126,15 @@
    }
    else if (rover.facing == FACING_LEFT) {
      if (rover.head_frame > 0) rover.head_frame--;
+   }
+ }
+ 
+ rover.screen_wrap = function() {
+   if (rover.x > VIEW_WIDTH) {
+     rover.x -= VIEW_WIDTH + rover.width;
+   }
+   else if (rover.x < -1 * rover.width) {
+     rover.x += VIEW_WIDTH + rover.width;
    }
  }
  

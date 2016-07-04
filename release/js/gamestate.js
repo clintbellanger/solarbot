@@ -18,11 +18,12 @@ function gamestate_logic() {
 
 function gamestate_render() {
 
-  clear_canvas("#888888");
+  clear_canvas("#272c4a");
 
   switch(gamestate) {
   
     case STATE_EXPLORE:
+	  labyrinth.draw_room();
       rover.render();
 	  break;
   }

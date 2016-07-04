@@ -64,6 +64,8 @@ function init() {
 
   // initialize all game units
   imageset.init();
+  tileset.init();
+  labyrinth.init();
   rover.init();
 
   init_complete = true;
