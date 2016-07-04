@@ -155,17 +155,24 @@ function touchCoord(evt) {
 }
 
 function simulatePress() {
-  if (mouse_pos.x < VIEW_WIDTH/2) {
-    pressing.left = true;
+  if (mouse_pos.y > VIEW_HEIGHT/2) {
+    if (mouse_pos.x < VIEW_WIDTH/2) {
+      pressing.left = true;
+    }
+    else if (mouse_pos.x >= VIEW_WIDTH/2) {
+      pressing.right = true;
+    }
   }
-  else if (mouse_pos.x >= VIEW_WIDTH/2) {
-    pressing.right = true;
+  else {
+    pressing.up = true;
   }
 }
 
 function simulateRelease() {
   pressing.left = false;
   pressing.right = false;
+  pressing.up = false;
   input_lock.left = false;
   input_lock.right = false;
+  input_lock.up = false;
 }

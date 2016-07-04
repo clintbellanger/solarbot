@@ -20,6 +20,7 @@ tileset.init = function() {
   (0,0) is upperleft tile.
  */
 tileset.draw_tile = function(tile_index, grid_x, grid_y) {
+  if (tile_index == 0) return;
   
 
   var posx = ((tile_index-1) % tileset.row_tilecount) * tileset.tile_size;
