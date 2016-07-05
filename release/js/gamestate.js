@@ -25,6 +25,7 @@ function gamestate_render() {
     case STATE_EXPLORE:
 	  labyrinth.draw_room();
       rover.render();
+	  battery.render();
 	  break;
   }
 }

@@ -67,6 +67,7 @@ function init() {
   tileset.init();
   labyrinth.init();
   rover.init();
+  battery.init();
 
   init_complete = true;
 }
