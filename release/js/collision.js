@@ -32,17 +32,37 @@ collision.posToGrid = function(position) {
    return Math.floor(position / tileset.tile_size);
 }
 
-collision.movedDown = function(rect) {
+collision.movedUp = function(rect) {
   
-  var grid_y = collision.posToGrid(rect.y + rect.h);
+  var grid_y = collision.posToGrid(rect.y);
   var grid_left = collision.posToGrid(rect.x);
-  var grid_right = collision.posToGrid(rect.x + rect.w);
+  var grid_right = collision.posToGrid(rect.x + rect.w -1);
   
   var collided = false;
   var new_y = rect.y;
     
   if (collision.tileHasCollision(grid_left, grid_y) || collision.tileHasCollision(grid_right, grid_y)) {
      collided = true;
+     // correct to next tile below
+     new_y = ((grid_y + 1) * tileset.tile_size);
+  }
+  
+  return {collided:collided, new_y:new_y};
+  
+}
+
+collision.movedDown = function(rect) {
+  
+  var grid_y = collision.posToGrid(rect.y + rect.h);
+  var grid_left = collision.posToGrid(rect.x);
+  var grid_right = collision.posToGrid(rect.x + rect.w -1);
+  
+  var collided = false;
+  var new_y = rect.y;
+    
+  if (collision.tileHasCollision(grid_left, grid_y) || collision.tileHasCollision(grid_right, grid_y)) {
+     collided = true;
+     // correct to next tile above
      new_y = (grid_y * tileset.tile_size - rect.h);
   }
   
@@ -58,10 +78,50 @@ collision.groundCheck = function(rect) {
   var one_pixel_down = 1;
   var grid_y = collision.posToGrid(rect.y + rect.h + one_pixel_down);
   var grid_left = collision.posToGrid(rect.x);
-  var grid_right = collision.posToGrid(rect.x + rect.w);
+  var grid_right = collision.posToGrid(rect.x + rect.w -1);
+  
+  console.log(rect.x);
   
   if (collision.tileHasCollision(grid_left, grid_y) || collision.tileHasCollision(grid_right, grid_y)) {
     return true;
   } 
   return false;
+}
+
+collision.movedLeft = function(rect) {
+  
+  var grid_x = collision.posToGrid(rect.x);
+  var grid_top = collision.posToGrid(rect.y);
+  var grid_bottom = collision.posToGrid(rect.y + rect.h -1);
+  
+  var collided = false;
+  var new_x = rect.x;
+    
+  if (collision.tileHasCollision(grid_x, grid_top) || collision.tileHasCollision(grid_x, grid_bottom)) {
+     collided = true;
+     // correct to next tile to the right
+     new_x = (grid_x + 1) * tileset.tile_size;
+  }
+  
+  return {collided:collided, new_x:new_x};
+  
+}
+
+collision.movedRight = function(rect) {
+  
+  var grid_x = collision.posToGrid(rect.x + rect.w);
+  var grid_top = collision.posToGrid(rect.y);
+  var grid_bottom = collision.posToGrid(rect.y + rect.h -1);
+  
+  var collided = false;
+  var new_x = rect.x;
+   
+  if (collision.tileHasCollision(grid_x, grid_top) || collision.tileHasCollision(grid_x, grid_bottom)) {
+     collided = true;
+     // correct to next tile to the left
+     new_x = (grid_x -1) * tileset.tile_size;
+  }
+  
+  return {collided:collided, new_x:new_x};
+  
 }

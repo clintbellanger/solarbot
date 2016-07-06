@@ -146,13 +146,21 @@ rover.apply_gravity = function() {
  * Correct for collisions if necessary.
  */
 rover.check_collisions = function() {
-  
+    
   // mid-air, moving down, hit ground  
   rover.check_landing();
-
+  
+  // going up and hit ceiling
+  rover.check_rising();
+    
   // on-ground, drove off edge
   rover.check_falling();
-    
+
+  // left and right wall collision
+  rover.check_left();
+  rover.check_right();
+
+  
 }
 
 /**
@@ -184,6 +192,50 @@ rover.check_falling = function() {
   if (!collision.groundCheck(rover.get_rect())) {
     rover.on_ground = false;    
   }
+}
+
+rover.check_rising = function() {
+  // up movement
+  if (!rover.on_ground) {
+    if (rover.speed_y < 0) {
+  
+      var move_result = collision.movedUp(rover.get_rect());
+      
+      if (move_result.collided) {
+        rover.speed_y = 0; 
+        rover.y = move_result.new_y;
+        rover.jump_startup_frames_remaining = 0;      
+      }
+	  }
+  }    
+}
+
+rover.check_left = function() {
+  
+  // left movement
+  if (rover.speed_x < 0) {
+  
+    var move_result = collision.movedLeft(rover.get_rect());
+    
+    if (move_result.collided) {
+      rover.speed_x = 0; 
+      rover.x = move_result.new_x;
+    }
+	}
+}
+
+rover.check_right = function() {
+  
+  // right movement
+  if (rover.speed_x > 0) {
+  
+    var move_result = collision.movedRight(rover.get_rect());
+    
+    if (move_result.collided) {
+      rover.speed_x = 0; 
+      rover.x = move_result.new_x;
+    }
+	}
 }
  
 /**
@@ -310,6 +362,8 @@ rover.screen_wrap = function() {
     rover.x += VIEW_WIDTH + rover.width;
   }
 }
+
+/**************************** Rendering Functions ****************************/
 
 rover.render = function() {
 
