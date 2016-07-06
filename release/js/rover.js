@@ -86,15 +86,13 @@ rover.logic = function() {
   // handle horizontal speed changes from player input
   if (rover.on_ground) rover.accelerate_ground();
   else rover.accelerate_air();  
-  rover.x += rover.speed_x;
   
   // handle vertical speed changes from jumping and gravity
   rover.jump();
   rover.apply_gravity();  
-  rover.y += rover.speed_y;
-
-  // landing, etc.
-  rover.check_collisions();
+  
+  // move by current speed
+  rover.movement();
   
   rover.screen_wrap();
   
@@ -141,103 +139,63 @@ rover.apply_gravity = function() {
   } 
 }
 
-/**
- * Rover has already moved x,y for this frame.
- * Correct for collisions if necessary.
- */
-rover.check_collisions = function() {
-    
-  // mid-air, moving down, hit ground  
-  rover.check_landing();
+rover.movement = function() {
+
+  if (rover.speed_x < 0) rover.move_left(); 
+  else if (rover.speed_x > 0) rover.move_right();
   
-  // going up and hit ceiling
-  rover.check_rising();
-    
-  // on-ground, drove off edge
-  rover.check_falling();
-
-  // left and right wall collision
-  rover.check_left();
-  rover.check_right();
-
+  if (rover.speed_y < 0) rover.move_up();
+  else if (rover.speed_y > 0) rover.move_down();
+  else if (rover.on_ground) rover.check_fall();
   
 }
 
-/**
- * Handle the rover landing on ground
- */
-rover.check_landing = function() {
-    
-  // down movement
-  if (!rover.on_ground) {
-    if (rover.speed_y > 0) {      
-  
-      var move_result = collision.movedDown(rover.get_rect());
-      
-      if (move_result.collided) {
-        rover.speed_y = 0;        
-        rover.on_ground = true;
-        rover.y = move_result.new_y;
-        rover.landing_frames_remaining =  rover.landing_max_frames;
-      
-      }
-	  }
-  }    
-}
-
-/**
- * Drove off edge
- */
-rover.check_falling = function() {
-  if (!collision.groundCheck(rover.get_rect())) {
-    rover.on_ground = false;    
+rover.move_left = function() {
+  var blocked = collision.collideLeft(rover.get_rect(), rover.speed_x);
+  if (!blocked) rover.x += rover.speed_x;
+  else {
+    rover.x = collision.snapLeft(rover.x);
+	rover.speed_x = 0;
   }
 }
 
-rover.check_rising = function() {
-  // up movement
-  if (!rover.on_ground) {
-    if (rover.speed_y < 0) {
-  
-      var move_result = collision.movedUp(rover.get_rect());
-      
-      if (move_result.collided) {
-        rover.speed_y = 0; 
-        rover.y = move_result.new_y;
-        rover.jump_startup_frames_remaining = 0;      
-      }
-	  }
-  }    
+rover.move_right = function() {
+  var blocked = collision.collideRight(rover.get_rect(), rover.speed_x);
+  if (!blocked) rover.x += rover.speed_x;
+  else {
+    rover.x = collision.snapRight(rover.x, rover.width);
+	rover.speed_x = 0;
+  }
 }
 
-rover.check_left = function() {
-  
-  // left movement
-  if (rover.speed_x < 0) {
-  
-    var move_result = collision.movedLeft(rover.get_rect());
-    
-    if (move_result.collided) {
-      rover.speed_x = 0; 
-      rover.x = move_result.new_x;
-    }
-	}
+rover.move_up = function() {
+  var blocked = collision.collideUp(rover.get_rect(), rover.speed_y);
+  if (!blocked) rover.y += rover.speed_y;
+  else {    
+    rover.y = collision.snapUp(rover.y);
+	rover.speed_y = 0;
+	rover.jump_startup_frames_remaining = 0;
+  }
 }
 
-rover.check_right = function() {
-  
-  // right movement
-  if (rover.speed_x > 0) {
-  
-    var move_result = collision.movedRight(rover.get_rect());
-    
-    if (move_result.collided) {
-      rover.speed_x = 0; 
-      rover.x = move_result.new_x;
-    }
-	}
+rover.move_down = function() {
+
+  var blocked = collision.collideDown(rover.get_rect(), rover.speed_y);
+  if (!blocked) rover.y += rover.speed_y;
+  else {
+    rover.y = collision.snapDown(rover.y, rover.height);
+	rover.speed_y = 0;
+    rover.on_ground = true;
+    rover.landing_frames_remaining = rover.landing_max_frames;	
+  }
 }
- 
+
+rover.check_fall = function() {
+  if (!collision.groundCheck(rover.get_rect())) {
+    rover.on_ground = false
+  }
+}
+
 /**
  * Horizontal (x-axis) movement when on the ground.
  */ 
