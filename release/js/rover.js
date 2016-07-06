@@ -83,29 +83,72 @@ rover.get_rect = function() {
 rover.logic = function() {
   redraw = true;
 
-  // handle horizontal speed changes from player input
+  // handle horizontal acceleration from player input
   if (rover.on_ground) rover.accelerate_ground();
   else rover.accelerate_air();  
   
-  // handle vertical speed changes from jumping and gravity
+  // handle vertical acceleration from jumping and gravity
   rover.jump();
   rover.apply_gravity();  
   
-  // move by current speed
+  // move by current velocity, affected by collisions.
   rover.movement();
   
+  // TEMP: stay on one screen
   rover.screen_wrap();
   
-  // handle wheel animation
+  // handle animations
   rover.accelerate_wheel(rover.wheel_left);
-  rover.accelerate_wheel(rover.wheel_right);
-  
+  rover.accelerate_wheel(rover.wheel_right);  
   rover.position_wheels();
   rover.position_head();
   rover.position_chassis();  
   
 }
 
+/**** Rover acceleration functions *******************************************/
+
+/**
+ * Horizontal (x-axis) movement when on the ground.
+ */ 
+rover.accelerate_ground = function() {
+
+  // accelerate based on player input
+  if (pressing.right) rover.speed_x += rover.ground_acceleration;
+  else if (pressing.left) rover.speed_x -= rover.ground_acceleration;
+  
+  // otherwise slow down
+  else if (rover.speed_x > rover.ground_deceleration) rover.speed_x -= rover.ground_deceleration;
+  else if (rover.speed_x < -1 * rover.ground_deceleration) rover.speed_x += rover.ground_deceleration;
+  else rover.speed_x = 0.0;
+  
+  // cap max speeds
+  if (rover.speed_x > rover.max_speed) rover.speed_x = rover.max_speed;
+  if (rover.speed_x < -1 * rover.max_speed) rover.speed_x = -1 * rover.max_speed;
+  
+}
+
+/**
+ * Horizontal (x-axis) movement while in the air.
+ */
+rover.accelerate_air = function() {
+  // accelerate based on player input
+  if (pressing.right) rover.speed_x += rover.air_acceleration;
+  else if (pressing.left) rover.speed_x -= rover.air_acceleration;
+  
+  // otherwise slow down
+  else if (rover.speed_x > rover.air_deceleration) rover.speed_x -= rover.air_deceleration;
+  else if (rover.speed_x < -1 * rover.air_deceleration) rover.speed_x += rover.air_deceleration;
+  else rover.speed_x = 0.0;
+  
+  // cap max speeds
+  if (rover.speed_x > rover.max_speed) rover.speed_x = rover.max_speed;
+  if (rover.speed_x < -1 * rover.max_speed) rover.speed_x = -1 * rover.max_speed;
+}
+
+/**
+ * Vertical acceleration when jump button held
+ */
 rover.jump = function() {
   
   // this function is about accelerating upward on input
@@ -133,12 +176,20 @@ rover.jump = function() {
   }
 }
 
+/**
+ * Vertical acceleration by grav constant
+ */
 rover.apply_gravity = function() {
   if (!rover.on_ground) {
     rover.speed_y += rover.gravity_acceleration;
   } 
 }
 
+/**** Rover velocity and collision  ******************************************/
+
+/**
+ * Collision-responsive movement
+ */
 rover.movement = function() {
 
   if (rover.speed_x < 0) rover.move_left(); 
@@ -190,46 +241,16 @@ rover.move_down = function() {
   }
 }
 
+/**
+ * If no longer touching ground, start falling
+ */
 rover.check_fall = function() {
   if (!collision.groundCheck(rover.get_rect())) {
     rover.on_ground = false
   }
 }
 
-/**
- * Horizontal (x-axis) movement when on the ground.
- */ 
-rover.accelerate_ground = function() {
-
-  // accelerate based on player input
-  if (pressing.right) rover.speed_x += rover.ground_acceleration;
-  else if (pressing.left) rover.speed_x -= rover.ground_acceleration;
-  
-  // otherwise slow down
-  else if (rover.speed_x > rover.ground_deceleration) rover.speed_x -= rover.ground_deceleration;
-  else if (rover.speed_x < -1 * rover.ground_deceleration) rover.speed_x += rover.ground_deceleration;
-  else rover.speed_x = 0.0;
-  
-  // cap max speeds
-  if (rover.speed_x > rover.max_speed) rover.speed_x = rover.max_speed;
-  if (rover.speed_x < -1 * rover.max_speed) rover.speed_x = -1 * rover.max_speed;
-  
-}
-
-rover.accelerate_air = function() {
-  // accelerate based on player input
-  if (pressing.right) rover.speed_x += rover.air_acceleration;
-  else if (pressing.left) rover.speed_x -= rover.air_acceleration;
-  
-  // otherwise slow down
-  else if (rover.speed_x > rover.air_deceleration) rover.speed_x -= rover.air_deceleration;
-  else if (rover.speed_x < -1 * rover.air_deceleration) rover.speed_x += rover.air_deceleration;
-  else rover.speed_x = 0.0;
-  
-  // cap max speeds
-  if (rover.speed_x > rover.max_speed) rover.speed_x = rover.max_speed;
-  if (rover.speed_x < -1 * rover.max_speed) rover.speed_x = -1 * rover.max_speed;
-}
+/**** Rover animation functions **********************************************/
 
 rover.accelerate_wheel = function(wheel) {
 
