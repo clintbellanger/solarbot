@@ -13,13 +13,18 @@ labyrinth.init = function() {
   labyrinth.room_tiles = [
 [0,0,0,0,0,6,4,4],
 [0,0,0,0,0,6,5,4],
-[0,0,0,0,0,6,4,4],
+[0,1,2,3,0,6,4,4],
 [0,0,0,0,0,6,4,4],
 [0,0,0,0,0,6,4,5],
 [1,2,2,2,2,2,2,3],
 [2,2,3,1,2,3,1,2],
 [3,5,5,5,5,5,5,1]];
 
+}
+
+labyrinth.get_tile = function(grid_x, grid_y) {
+    
+  return labyrinth.room_tiles[grid_y][grid_x]; 
 }
 
 labyrinth.draw_room = function() {

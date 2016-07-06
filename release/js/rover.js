@@ -76,6 +76,10 @@ rover.init = function() {
   
 }
 
+rover.get_rect = function() {
+  return {x:rover.x, y:rover.y, w:rover.width, h:rover.height}; 
+}
+
 rover.logic = function() {
   redraw = true;
 
@@ -89,8 +93,8 @@ rover.logic = function() {
   rover.apply_gravity();  
   rover.y += rover.speed_y;
 
-  // just jump landing for now
-  rover.check_collision();
+  // landing, etc.
+  rover.check_collisions();
   
   rover.screen_wrap();
   
@@ -137,22 +141,54 @@ rover.apply_gravity = function() {
   } 
 }
 
-rover.check_collision = function() {
+/**
+ * Rover has already moved x,y for this frame.
+ * Correct for collisions if necessary.
+ */
+rover.check_collisions = function() {
+  
+  // mid-air, moving down, hit ground  
+  rover.check_landing();
 
-  // TEMP check landing
+  // on-ground, drove off edge
+  rover.check_falling();
+    
+}
+
+/**
+ * Handle the rover landing on ground
+ */
+rover.check_landing = function() {
+    
+  // down movement
   if (!rover.on_ground) {
-    if (rover.speed_y > 0) {
-	  if (rover.y > 64) {
-	    rover.y = 64;
-		rover.speed_y = 0;
-		rover.on_ground = true;
-		rover.landing_frames_remaining = rover.landing_max_frames;
+    if (rover.speed_y > 0) {      
+  
+      var move_result = collision.movedDown(rover.get_rect());
+      
+      if (move_result.collided) {
+        rover.speed_y = 0;        
+        rover.on_ground = true;
+        rover.y = move_result.new_y;
+        rover.landing_frames_remaining =  rover.landing_max_frames;
+      
+      }
 	  }
-	}
+  }    
+}
+
+/**
+ * Drove off edge
+ */
+rover.check_falling = function() {
+  if (!collision.groundCheck(rover.get_rect())) {
+    rover.on_ground = false;    
   }
 }
  
- 
+/**
+ * Horizontal (x-axis) movement when on the ground.
+ */ 
 rover.accelerate_ground = function() {
 
   // accelerate based on player input
