@@ -60,7 +60,7 @@ collision.groundCheck = function(rect) {
   var grid_left = collision.posToGrid(rect.x);
   var grid_right = collision.posToGrid(rect.x + rect.w);
   
-  if (collision.tileHasCollision(grid_left, grid_y) && collision.tileHasCollision(grid_right, grid_y)) {
+  if (collision.tileHasCollision(grid_left, grid_y) || collision.tileHasCollision(grid_right, grid_y)) {
     return true;
   } 
   return false;
