@@ -15,16 +15,13 @@ tileset.init = function() {
   tileset.row_tilecount = 4;
   
   tileset.tile_metadata = new Array();
-  for (var i=0; i<=6; i++) {
-    tileset.tile_metadata[i] = new Object(); 
+  for (var i=0; i<=16; i++) {
+    tileset.tile_metadata[i] = new Object();
+	tileset.tile_metadata[i].collide = false;
   }
-  tileset.tile_metadata[0].collide = false;
   tileset.tile_metadata[1].collide = true;
   tileset.tile_metadata[2].collide = true;
   tileset.tile_metadata[3].collide = true;
-  tileset.tile_metadata[4].collide = false;
-  tileset.tile_metadata[5].collide = false;  
-  tileset.tile_metadata[6].collide = false;  
 }
 
 /**
