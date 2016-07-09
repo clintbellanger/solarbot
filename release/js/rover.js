@@ -17,8 +17,17 @@ rover.init = function() {
   rover.wheels = imageset.load("images/rover_wheels.png");
   rover.head = imageset.load("images/rover_head.png");
   
+  // full rover sprite size
   rover.width = 16;
   rover.height = 16;
+  
+  // rover collision margins
+  // use to calculate collision box,
+  // and then apply the results back to the rover sprite position.
+  rover.margin_top = 4;
+  rover.margin_left = 2
+  rover.margin_right = 2
+  rover.margin_bottom = 1;
 
   // rover movement properties
   // horizontal
@@ -76,8 +85,16 @@ rover.init = function() {
   
 }
 
-rover.get_rect = function() {
-  return {x:rover.x, y:rover.y, w:rover.width, h:rover.height}; 
+//rover.get_rect = function() {
+//  return {x:rover.x, y:rover.y, w:rover.width, h:rover.height}; 
+//}
+
+rover.get_collision_box = function() {
+
+  return {x:rover.x + rover.margin_left,
+          y:rover.y + rover.margin_top,
+		  w:rover.width - (rover.margin_left + rover.margin_right),
+		  h:rover.height - (rover.margin_top + rover.margin_bottom)};
 }
 
 rover.logic = function() {
@@ -162,14 +179,15 @@ rover.jump = function() {
   // or, having just left the ground and still holding the jump button
   if (!rover.on_ground && rover.jump_startup_frames_remaining == 0) return;
    
-  if (pressing.up || pressing.action) {
-  
-    // start a new jump
-    if (rover.on_ground) {
+  // check starting a new jump
+  if (pressing.up && !input_lock.up && rover.on_ground) {
+	  input_lock.up = true; // must release this button before jumping again
       rover.on_ground = false;
 	  rover.jump_startup_frames_remaining = rover.jump_max_frames;
 	}
-	 
+
+  // holding jump to jump higher
+  if (pressing.up && rover.jump_startup_frames_remaining > 0) {	
 	// accelerate up	
 	rover.speed_y = rover.jump_speed_y;
 	rover.jump_startup_frames_remaining--;
@@ -202,39 +220,42 @@ rover.movement = function() {
 }
 
 rover.move_left = function() {
-  var blocked = collision.collideLeft(rover.get_rect(), rover.speed_x);
+  var cbox = rover.get_collision_box();
+  var blocked = collision.collideLeft(cbox, rover.speed_x);
   if (!blocked) rover.x += rover.speed_x;
-  else {
-    rover.x = collision.snapLeft(rover.x);
+  else {    
+    rover.x = collision.snapLeft(cbox.x) - rover.margin_left;
 	rover.speed_x = 0;
   }
 }
 
 rover.move_right = function() {
-  var blocked = collision.collideRight(rover.get_rect(), rover.speed_x);
+  var cbox = rover.get_collision_box();
+  var blocked = collision.collideRight(cbox, rover.speed_x);
   if (!blocked) rover.x += rover.speed_x;
   else {
-    rover.x = collision.snapRight(rover.x, rover.width);
+    rover.x = collision.snapRight(cbox.x, cbox.w) - rover.margin_left;
 	rover.speed_x = 0;
   }
 }
 
 rover.move_up = function() {
-  var blocked = collision.collideUp(rover.get_rect(), rover.speed_y);
+  var cbox = rover.get_collision_box();
+  var blocked = collision.collideUp(cbox, rover.speed_y);
   if (!blocked) rover.y += rover.speed_y;
   else {    
-    rover.y = collision.snapUp(rover.y);
+    rover.y = collision.snapUp(cbox.y) - rover.margin_top;
 	rover.speed_y = 0;
 	rover.jump_startup_frames_remaining = 0;
   }
 }
 
 rover.move_down = function() {
-
-  var blocked = collision.collideDown(rover.get_rect(), rover.speed_y);
+  var cbox = rover.get_collision_box();
+  var blocked = collision.collideDown(cbox, rover.speed_y);
   if (!blocked) rover.y += rover.speed_y;
   else {
-    rover.y = collision.snapDown(rover.y, rover.height);
+    rover.y = collision.snapDown(cbox.y, cbox.h) - rover.margin_top;
 	rover.speed_y = 0;
     rover.on_ground = true;
     rover.landing_frames_remaining = rover.landing_max_frames;	
@@ -245,7 +266,7 @@ rover.move_down = function() {
  * If no longer touching ground, start falling
  */
 rover.check_fall = function() {
-  if (!collision.groundCheck(rover.get_rect())) {
+  if (!collision.groundCheck(rover.get_collision_box())) {
     rover.on_ground = false
   }
 }
