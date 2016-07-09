@@ -22,19 +22,19 @@ rover.init = function() {
 
   // rover movement properties
   // horizontal
-  rover.max_speed = 2.0;   
-  rover.ground_acceleration = 0.12;
-  rover.ground_deceleration = 0.12;
-  rover.air_acceleration = 0.06;
-  rover.air_deceleration = 0.03;
+  rover.max_speed = 1.5;   
+  rover.ground_acceleration = 0.3;
+  rover.ground_drag = 0.2;
+  rover.air_acceleration = 0.04;
+  rover.air_drag = 0.02;
   
   
-  rover.jump_max_frames = 20;
+  rover.jump_max_frames = 18;
   rover.landing_max_frames = 4;
   //vertical
-  rover.jump_speed_y = -2; // power of a new or held jump
+  rover.jump_speed_y = -1.6; // power of a new or held jump
   rover.gravity_acceleration = 0.1;
-  rover.max_vertical_speed = 4.0;
+  rover.max_vertical_speed = 3.6;
 
   // rover current state   
   // horizontal
@@ -117,9 +117,9 @@ rover.accelerate_ground = function() {
   if (pressing.right) rover.speed_x += rover.ground_acceleration;
   else if (pressing.left) rover.speed_x -= rover.ground_acceleration;
   
-  // otherwise slow down
-  else if (rover.speed_x > rover.ground_deceleration) rover.speed_x -= rover.ground_deceleration;
-  else if (rover.speed_x < -1 * rover.ground_deceleration) rover.speed_x += rover.ground_deceleration;
+  // apply ground friction
+  if (rover.speed_x > rover.ground_drag) rover.speed_x -= rover.ground_drag;
+  else if (rover.speed_x < -1 * rover.ground_drag) rover.speed_x += rover.ground_drag;
   else rover.speed_x = 0.0;
   
   // cap max speeds
@@ -136,9 +136,9 @@ rover.accelerate_air = function() {
   if (pressing.right) rover.speed_x += rover.air_acceleration;
   else if (pressing.left) rover.speed_x -= rover.air_acceleration;
   
-  // otherwise slow down
-  else if (rover.speed_x > rover.air_deceleration) rover.speed_x -= rover.air_deceleration;
-  else if (rover.speed_x < -1 * rover.air_deceleration) rover.speed_x += rover.air_deceleration;
+  // apply air drag
+  if (rover.speed_x > rover.air_drag) rover.speed_x -= rover.air_drag;
+  else if (rover.speed_x < -1 * rover.air_drag) rover.speed_x += rover.air_drag;
   else rover.speed_x = 0.0;
   
   // cap max speeds
