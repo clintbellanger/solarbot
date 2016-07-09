@@ -44,6 +44,7 @@ rover.init = function() {
   rover.jump_speed_y = -1.6; // power of a new or held jump
   rover.gravity_acceleration = 0.1;
   rover.max_vertical_speed = 3.6;
+  rover.max_fall_speed = 4.0;
 
   // rover current state   
   // horizontal
@@ -200,6 +201,7 @@ rover.jump = function() {
 rover.apply_gravity = function() {
   if (!rover.on_ground) {
     rover.speed_y += rover.gravity_acceleration;
+	if (rover.speed_y > rover.max_fall_speed) rover.speed_y = rover.max_fall_speed;
   } 
 }
 
@@ -361,6 +363,11 @@ rover.screen_wrap = function() {
   else if (rover.x < -1 * rover.width) {
     rover.x += VIEW_WIDTH + rover.width;
   }
+  
+  if (rover.y > VIEW_HEIGHT) {
+    rover.y -= VIEW_HEIGHT + rover.height;
+  }
+  
 }
 
 /**************************** Rendering Functions ****************************/
