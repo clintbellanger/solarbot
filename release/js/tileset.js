@@ -24,6 +24,7 @@ tileset.init = function() {
   tileset.tile_metadata[3].collide = true;
   tileset.tile_metadata[9].collide = true;
   tileset.tile_metadata[10].collide = true;
+  tileset.tile_metadata[11].collide = true;
   
 }
 
