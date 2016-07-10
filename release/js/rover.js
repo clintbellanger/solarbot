@@ -43,7 +43,7 @@ rover.init = function() {
   //vertical
   rover.jump_speed_y = -1.6; // power of a new or held jump
   rover.gravity_acceleration = 0.1;
-  rover.max_vertical_speed = 3.6;
+  rover.max_vertical_speed = 3.5;
   rover.max_fall_speed = 4.0;
 
   // rover current state   
@@ -357,15 +357,22 @@ rover.position_chassis = function() {
 }
 
 rover.screen_wrap = function() {
-  if (rover.x > VIEW_WIDTH) {
-    rover.x -= VIEW_WIDTH + rover.width;
+  if (rover.x + rover.width/2 > VIEW_WIDTH) {
+    rover.x -= VIEW_WIDTH;
+	labyrinth.load_room(labyrinth.current_room_x+1, labyrinth.current_room_y);
   }
-  else if (rover.x < -1 * rover.width) {
-    rover.x += VIEW_WIDTH + rover.width;
+  else if (rover.x < -1 * rover.width/2) {
+    rover.x += VIEW_WIDTH;
+	labyrinth.load_room(labyrinth.current_room_x-1, labyrinth.current_room_y);
   }
   
-  if (rover.y > VIEW_HEIGHT) {
-    rover.y -= VIEW_HEIGHT + rover.height;
+  if (rover.y + rover.height/2 > VIEW_HEIGHT) {
+    rover.y -= VIEW_HEIGHT;
+	labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y+1);
+  }
+  else if (rover.y < -1 * rover.height/2) {
+    rover.y += VIEW_HEIGHT;
+	labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y-1);
   }
   
 }
