@@ -6,11 +6,11 @@ var clickarea_jump = {x:120, y:20, w:40, h:100};
 function resizeCanvas() {
   if (!STRETCH_TO_SCREEN) {
     
-	can.width = VIEW_WIDTH * SCALE;
-	can.height = VIEW_HEIGHT * SCALE;
-	redraw = true;
-	
-	return;
+	  can.width = VIEW_WIDTH * SCALE;
+	  can.height = VIEW_HEIGHT * SCALE;
+	  redraw = true;
+	  setNearestNeighbor();
+	  return;
   }
 
   var aspect_ratio = VIEW_WIDTH/VIEW_HEIGHT;
@@ -27,6 +27,13 @@ function resizeCanvas() {
 	can.height = can.width / aspect_ratio;
 	SCALE = can.width / VIEW_WIDTH;
   }
+  
+  if (STRETCH_TO_WHOLE_SIZES) {
+    if (SCALE > 1) {
+      SCALE = Math.floor(SCALE);
+    }
+  }
+  
   redraw = true;
   setNearestNeighbor();
 }

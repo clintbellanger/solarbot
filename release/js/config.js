@@ -18,6 +18,9 @@ var SCALE = 4;
 // If disabled, the display won't scale any images (it will simply display PRESCALEd data).
 var STRETCH_TO_SCREEN = true;
 
+// Use nearest int for SCALE when stretching
+var STRETCH_TO_WHOLE_SIZES = false;
+
 // user options that can be set from the main menu
 var OPTIONS = new Object();
 OPTIONS.animation = true;
