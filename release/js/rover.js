@@ -84,6 +84,11 @@ rover.init = function() {
   rover.head_frame = 0;
   rover.facing = FACING_LEFT;
   
+  rover.powerups = new Object();
+  rover.powerups.doublejump = new Object();
+  rover.powerups.doublejump.acquired = true;
+  rover.powerups.doublejump.used = false;
+  
 }
 
 //rover.get_rect = function() {
@@ -100,7 +105,9 @@ rover.get_collision_box = function() {
 
 rover.logic = function() {
   redraw = true;
-
+  
+  //console.log("rover.x=" + rover.x);
+  
   // handle horizontal acceleration from player input
   if (rover.on_ground) rover.accelerate_ground();
   else rover.accelerate_air();  
@@ -120,7 +127,10 @@ rover.logic = function() {
   rover.accelerate_wheel(rover.wheel_right);  
   rover.position_wheels();
   rover.position_head();
-  rover.position_chassis();  
+  rover.position_chassis();
+  
+  //console.log("rover.x=" + rover.x);
+  
   
 }
 
@@ -174,19 +184,25 @@ rover.jump = function() {
   if (!pressing.up && !pressing.action) {
     rover.jump_startup_frames_remaining = 0;
     return;
+  }  
+
+    
+  // check doublejump
+  if (rover.powerups.doublejump.acquired && !rover.powerups.doublejump.used) {
+    if (pressing.up && !input_lock.up && !rover.on_ground) {
+	  input_lock.up = true; // must release this button before jumping again
+	  rover.jump_startup_frames_remaining = rover.jump_max_frames;
+	  rover.powerups.doublejump.used = true; // resets upon landing
+	}
+  }  
+  
+  // check regular jump
+  if (pressing.up && !input_lock.up && rover.on_ground) {
+	input_lock.up = true; // must release this button before jumping again
+    rover.on_ground = false;
+	rover.jump_startup_frames_remaining = rover.jump_max_frames;
   }
   
-  // must be on_ground to jump
-  // or, having just left the ground and still holding the jump button
-  if (!rover.on_ground && rover.jump_startup_frames_remaining == 0) return;
-   
-  // check starting a new jump
-  if (pressing.up && !input_lock.up && rover.on_ground) {
-	  input_lock.up = true; // must release this button before jumping again
-      rover.on_ground = false;
-	  rover.jump_startup_frames_remaining = rover.jump_max_frames;
-	}
-
   // holding jump to jump higher
   if (pressing.up && rover.jump_startup_frames_remaining > 0) {	
 	// accelerate up	
@@ -225,7 +241,7 @@ rover.move_left = function() {
   var cbox = rover.get_collision_box();
   var blocked = collision.collideLeft(cbox, rover.speed_x);
   if (!blocked) rover.x += rover.speed_x;
-  else {    
+  else {
     rover.x = collision.snapLeft(cbox.x) - rover.margin_left;
 	rover.speed_x = 0;
   }
@@ -234,7 +250,9 @@ rover.move_left = function() {
 rover.move_right = function() {
   var cbox = rover.get_collision_box();
   var blocked = collision.collideRight(cbox, rover.speed_x);
-  if (!blocked) rover.x += rover.speed_x;
+  if (!blocked) {
+    rover.x += rover.speed_x;
+  }
   else {
     rover.x = collision.snapRight(cbox.x, cbox.w) - rover.margin_left;
 	rover.speed_x = 0;
@@ -260,7 +278,8 @@ rover.move_down = function() {
     rover.y = collision.snapDown(cbox.y, cbox.h) - rover.margin_top;
 	rover.speed_y = 0;
     rover.on_ground = true;
-    rover.landing_frames_remaining = rover.landing_max_frames;	
+    rover.landing_frames_remaining = rover.landing_max_frames;
+	rover.powerups.doublejump.used = false;
   }
 }
 
@@ -380,24 +399,25 @@ rover.screen_wrap = function() {
 /**************************** Rendering Functions ****************************/
 
 rover.render = function() {
-
-  //chassis in main position
-  imageset.render(
-    rover.chassis,
-	 0,0,
-	 rover.width,rover.height,
-	 Math.round(rover.x),rover.y + rover.chassis_offset_y
-  );
-
+  rover.render_chassis();
   rover.render_wheel(rover.wheel_left);
   rover.render_wheel(rover.wheel_right);
   rover.render_head();
 }
 
+rover.render_chassis = function() {
+  imageset.render(
+    rover.chassis,
+	 0,0,
+	 rover.width,rover.height,
+	 Math.floor(rover.x),rover.y + rover.chassis_offset_y
+  );
+}
+
 rover.render_wheel = function(wheel) {
 
-  var x = Math.round(rover.x + wheel.x_offset);
-  var y = Math.round(rover.y + wheel.y_offset);
+  var x = Math.floor(rover.x + wheel.x_offset);
+  var y = Math.floor(rover.y + wheel.y_offset);
 
   var animation_frame = Math.floor(wheel.rotation);
 
@@ -405,8 +425,7 @@ rover.render_wheel = function(wheel) {
     rover.wheels,
 	 8 * animation_frame + 1,2,
 	 5,6,
-	 Math.round(x),
-	 Math.round(y)
+	 x,y
   );
 }
 
@@ -415,7 +434,7 @@ rover.render_head = function() {
     rover.head,
 	 (rover.head_frame * 16),0,
 	 16,6,
-	 Math.round(rover.x), Math.round(rover.y) + rover.chassis_offset_y
+	 Math.floor(rover.x), Math.floor(rover.y) + rover.chassis_offset_y
   );
 
 }
