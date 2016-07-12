@@ -7,10 +7,8 @@
  
 var collision = new Object();
 
-// real positions are floats.
-// drawing positions are floor(float)
-// this padding makes left and right movement work similarly
-collision.padding = 0.1;
+// leave this much space after colliding with a wall
+collision.padding = 0.01;
 
 collision.isWithin = function(point, rect) {
   if (point.x < rect.x) return false;
@@ -54,7 +52,7 @@ collision.groundCheck = function(rect) {
 }
 
 collision.collideLeft = function(rect, speed_x) {
-  var grid_x = collision.posToGrid(rect.x + speed_x - collision.padding);
+  var grid_x = collision.posToGrid(rect.x + speed_x);
   var grid_top = collision.posToGrid(rect.y);
   var grid_bottom = collision.posToGrid(rect.y + rect.h-1);
   
@@ -65,7 +63,7 @@ collision.collideLeft = function(rect, speed_x) {
 }
 
 collision.collideRight = function(rect, speed_x) {
-  var grid_x = collision.posToGrid(rect.x + rect.w - collision.padding + speed_x);
+  var grid_x = collision.posToGrid(rect.x + rect.w + speed_x);
   var grid_top = collision.posToGrid(rect.y);
   var grid_bottom = collision.posToGrid(rect.y + rect.h-1);
   
@@ -87,7 +85,7 @@ collision.collideUp = function(rect, speed_y) {
 }
 
 collision.collideDown = function(rect, speed_y) {
-  var grid_y = collision.posToGrid(rect.y + rect.h-1 + speed_y);
+  var grid_y = collision.posToGrid(rect.y + rect.h + speed_y);
   var grid_left = collision.posToGrid(rect.x);
   var grid_right = collision.posToGrid(rect.x + rect.w-1);
   
@@ -99,25 +97,25 @@ collision.collideDown = function(rect, speed_y) {
 
 
 collision.snapLeft = function(pos_x) {
-  var grid_x = collision.posToGrid(pos_x);  
+  var grid_x = Math.round(pos_x / tileset.tile_size);
   var new_x = grid_x * tileset.tile_size + collision.padding;
   return new_x;
 }
 
 collision.snapRight = function(pos_x, width) {
-  var grid_x = collision.posToGrid(pos_x + width-1) + 1;    
+  var grid_x = Math.round((pos_x + width) / tileset.tile_size);
   var new_x = grid_x * tileset.tile_size - width + (1-collision.padding);
   return new_x;
 }
 
 collision.snapUp = function(pos_y) {
-  var grid_y = collision.posToGrid(pos_y);  
-  var new_y = grid_y * tileset.tile_size;
+  var grid_y = Math.round(pos_y / tileset.tile_size);
+  var new_y = grid_y * tileset.tile_size + collision.padding;
   return new_y;
 }
 
 collision.snapDown = function(pos_y, height) {
-  var grid_y = collision.posToGrid(pos_y + height-1) + 1;  
-  var new_y = grid_y * tileset.tile_size - height;  
+  var grid_y = Math.round((pos_y + height) / tileset.tile_size);
+  var new_y = grid_y * tileset.tile_size - height + (1-collision.padding);  
   return new_y;
 }
