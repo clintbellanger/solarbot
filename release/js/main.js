@@ -66,6 +66,7 @@ function init() {
   imageset.init();
   tileset.init();
   labyrinth.init();
+  powerups.init();
   rover.init();
   battery.init();
 

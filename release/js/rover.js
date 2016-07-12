@@ -84,11 +84,6 @@ rover.init = function() {
   rover.head_frame = 0;
   rover.facing = FACING_LEFT;
   
-  rover.powerups = new Object();
-  rover.powerups.doublejump = new Object();
-  rover.powerups.doublejump.acquired = true;
-  rover.powerups.doublejump.used = false;
-  
 }
 
 //rover.get_rect = function() {
@@ -188,11 +183,11 @@ rover.jump = function() {
 
     
   // check doublejump
-  if (rover.powerups.doublejump.acquired && !rover.powerups.doublejump.used) {
+  if (powerups.doublejump.acquired && !powerups.doublejump.used) {
     if (pressing.up && !input_lock.up && !rover.on_ground) {
 	  input_lock.up = true; // must release this button before jumping again
 	  rover.jump_startup_frames_remaining = rover.jump_max_frames;
-	  rover.powerups.doublejump.used = true; // resets upon landing
+	  powerups.doublejump.used = true; // resets upon landing
 	}
   }  
   
@@ -279,7 +274,7 @@ rover.move_down = function() {
 	rover.speed_y = 0;
     rover.on_ground = true;
     rover.landing_frames_remaining = rover.landing_max_frames;
-	rover.powerups.doublejump.used = false;
+	powerups.doublejump.used = false;
   }
 }
 
@@ -399,10 +394,16 @@ rover.screen_wrap = function() {
 /**************************** Rendering Functions ****************************/
 
 rover.render = function() {
+  // base body parts which are animated and positioned separately
   rover.render_chassis();
   rover.render_wheel(rover.wheel_left);
   rover.render_wheel(rover.wheel_right);
   rover.render_head();
+  
+  // visual effects from active power ups
+  if (powerups.doublejump.used && rover.jump_startup_frames_remaining > 0) {
+    powerups.render_doublejump(rover.x, rover.y);
+  }
 }
 
 rover.render_chassis = function() {
