@@ -411,7 +411,7 @@ rover.render_chassis = function() {
     rover.chassis,
 	 0,0,
 	 rover.width,rover.height,
-	 Math.floor(rover.x),rover.y + rover.chassis_offset_y
+	 Math.floor(rover.x), Math.floor(rover.y + rover.chassis_offset_y)
   );
 }
 
