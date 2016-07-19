@@ -11,9 +11,9 @@ function gamestate_logic() {
 
   switch(gamestate) {
     case STATE_EXPLORE:
-	  rover.logic();
-    powerups.logic();
-	  break;
+      rover.logic();
+      powerups.logic();
+      break;
   } 
 }
 
@@ -24,11 +24,11 @@ function gamestate_render() {
   switch(gamestate) {
   
     case STATE_EXPLORE:
-	  labyrinth.draw_room();
-    rover.render();
-	  battery.render();
-    
-	  break;
+      labyrinth.draw_room();
+      rover.render();	  
+      battery.render();
+      minimap.render();
+      break;
   }
 }
 

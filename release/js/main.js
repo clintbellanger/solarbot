@@ -69,6 +69,7 @@ function init() {
   powerups.init();
   rover.init();
   battery.init();
+  minimap.init();
 
   init_complete = true;
 }
