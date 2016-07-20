@@ -126,6 +126,8 @@ rover.logic = function() {
   
   //console.log("rover.x=" + rover.x);
   
+  // explore minimap
+  minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
   
 }
 
@@ -387,7 +389,7 @@ rover.screen_wrap = function() {
   else if (rover.y < -1 * rover.height/2) {
     rover.y += VIEW_HEIGHT;
 	labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y-1);
-  }
+  }  
   
 }
 

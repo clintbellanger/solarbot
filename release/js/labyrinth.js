@@ -10,6 +10,8 @@ labyrinth.init = function() {
   labyrinth.room_tile_width = 8;
   labyrinth.room_tile_height = 8;
   
+  // TODO: probably move this to the map class
+  // and leave labyrinth as the static lookup world map data
   labyrinth.current_room_x = 0;
   labyrinth.current_room_y = 0;
   
@@ -18,6 +20,10 @@ labyrinth.init = function() {
     labyrinth.room_tiles[i] = new Array();
   }
 
+  // total labyrinth size
+  labyrinth.room_span_x = 5;
+  labyrinth.room_span_y = 2;
+    
   // overall world map
   // TODO: external file
   labyrinth.world_tiles = [
@@ -39,9 +45,33 @@ labyrinth.init = function() {
 [1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,5,5,1,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3]];
 
 
+  // TODO: way to calculate this?
+  // I suspect split rooms can be interpreted different ways, so maybe this
+  // should be set by hand anyway?
+  labyrinth.minimap_room_tiles = [
+    [8,12,14,12,6],
+	[8,12,13,12,5]
+  ];
 
   labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y);
 
+}
+
+labyrinth.get_room_tile = function(room_x, room_y) {
+
+  // note x,y swap because of text edit array
+  return labyrinth.minimap_room_tiles[room_y][room_x];
+}
+
+labyrinth.valid_room = function(room_x, room_y) {
+
+  // within map bounds?
+  if (room_x >= 0 && room_y >= 0 &&
+      room_x < labyrinth.room_span_x &&
+	  room_y < labyrinth.room_span_y) {
+	  return true;	  
+  };
+  return false;
 }
 
 labyrinth.get_tile = function(grid_x, grid_y) {
