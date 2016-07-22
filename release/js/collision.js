@@ -96,6 +96,7 @@ collision.collideDown = function(rect, speed_y) {
 }
 
 
+
 collision.snapLeft = function(pos_x) {
   var grid_x = Math.round(pos_x / tileset.tile_size);
   var new_x = grid_x * tileset.tile_size + collision.padding;
@@ -118,4 +119,55 @@ collision.snapDown = function(pos_y, height) {
   var grid_y = Math.round((pos_y + height) / tileset.tile_size);
   var new_y = grid_y * tileset.tile_size - height + (1-collision.padding);  
   return new_y;
+}
+
+/**
+ Handle spikes and other tiles that work like spikes
+ hazardous_bottom
+ */
+collision.checkSpikesAbove = function(rect, speed_y) {
+
+  var grid_y = collision.posToGrid(rect.y + speed_y);
+  var grid_left = collision.posToGrid(rect.x);
+  var grid_right = collision.posToGrid(rect.x + rect.w-1);
+
+  // get tile metadata for these two tiles
+  var left_tile = tileset.tile_metadata[labyrinth.get_tile(grid_left,grid_y)];
+  var right_tile = tileset.tile_metadata[labyrinth.get_tile(grid_right,grid_y)];
+  
+  // one of the above tiles must be a hazard
+  var spikes_found = (left_tile.hazardous_bottom || right_tile.hazardous_bottom);
+
+  // if one of the above tiles is safe and solid, it will
+  // block the object from touching the spikes
+  var blocked = (left_tile.collide && !left_tile.hazardous_bottom) ||
+                (right_tile.collide && !right_tile.hazardous_bottom);
+
+  // touched spikes?
+  return (spikes_found && !blocked);
+}
+
+/**
+ tiles with hazardous tops
+ */
+collision.checkSpikesBelow = function(rect, speed_y) {
+
+  var grid_y = collision.posToGrid(rect.y + rect.h + speed_y);
+  var grid_left = collision.posToGrid(rect.x);
+  var grid_right = collision.posToGrid(rect.x + rect.w-1);
+
+  // get tile metadata for these two tiles
+  var left_tile = tileset.tile_metadata[labyrinth.get_tile(grid_left,grid_y)];
+  var right_tile = tileset.tile_metadata[labyrinth.get_tile(grid_right,grid_y)];
+  
+  // one of the above tiles must be a hazard
+  var spikes_found = (left_tile.hazardous_top || right_tile.hazardous_top);
+
+  // if one of the above tiles is safe and solid, it will
+  // block the object from touching the spikes
+  var blocked = (left_tile.collide && !left_tile.hazardous_top) ||
+                (right_tile.collide && !right_tile.hazardous_top);
+
+  // touched spikes?
+  return (spikes_found && !blocked);
 }

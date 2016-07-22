@@ -83,6 +83,10 @@ rover.init = function() {
   // head current state
   rover.head_frame = 0;
   rover.facing = FACING_LEFT;
+
+  // after taking damage, invulnerable for a moment
+  rover.invulnerable_frames = 0;
+  rover.invulnerable_length = 45; 
   
 }
 
@@ -114,8 +118,12 @@ rover.logic = function() {
   // move by current velocity, affected by collisions.
   rover.movement();
   
-  // TEMP: stay on one screen
+  // handle leaving screen
   rover.screen_wrap();
+
+  // check hazards
+  // spikes
+  rover.check_spikes();
   
   // handle animations
   rover.accelerate_wheel(rover.wheel_left);
@@ -123,11 +131,12 @@ rover.logic = function() {
   rover.position_wheels();
   rover.position_head();
   rover.position_chassis();
-  
-  //console.log("rover.x=" + rover.x);
-  
+   
   // explore minimap
   minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
+  
+  // temporary statuses
+  if (rover.invulnerable_frames > 0) rover.invulnerable_frames--;
   
 }
 
@@ -288,6 +297,32 @@ rover.check_fall = function() {
     rover.on_ground = false
   }
 }
+
+rover.check_spikes = function() {
+
+  // recently took damage, skip damage check
+  if (rover.invulnerable_frames > 0) return;
+  
+  cbox = rover.get_collision_box();
+  if (rover.on_ground) { // check for floor spikes
+  
+    if (collision.checkSpikesBelow(cbox, 1)) {
+	  imageset.shaking = 10;
+	  rover.invulnerable_frames = rover.invulnerable_length;
+	}  
+	
+  }
+  else { // check for ceiling spikes
+
+    if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
+	  imageset.shaking = 10;
+	  rover.invulnerable_frames = rover.invulnerable_length;
+    }	
+	
+  }
+}
+ 
+
 
 /**** Rover animation functions **********************************************/
 

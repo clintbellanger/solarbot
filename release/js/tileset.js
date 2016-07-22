@@ -18,12 +18,18 @@ tileset.init = function() {
   for (var i=0; i<=16; i++) {
     tileset.tile_metadata[i] = new Object();
 	tileset.tile_metadata[i].collide = false;
+	
+	// support spikes and similar dangerous terrain
+	tileset.tile_metadata[i].hazardous_top = false;
+	tileset.tile_metadata[i].hazardous_bottom = false;
   }
   tileset.tile_metadata[1].collide = true;
   tileset.tile_metadata[2].collide = true;
   tileset.tile_metadata[3].collide = true;
   tileset.tile_metadata[7].collide = true;
+  tileset.tile_metadata[7].hazardous_top = true;
   tileset.tile_metadata[8].collide = true;
+  tileset.tile_metadata[8].hazardous_bottom = true;
   tileset.tile_metadata[9].collide = true;
   tileset.tile_metadata[10].collide = true;
   tileset.tile_metadata[11].collide = true;

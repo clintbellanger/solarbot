@@ -10,6 +10,7 @@ imageset.init = function() {
   imageset.offset_x = 0;
   imageset.offset_y = 0;
   imageset.shaking = 0;
+  imageset.shake_radius = 4;
 }
 
 /**
@@ -33,8 +34,8 @@ imageset.onload = function() {
 imageset.logic = function() {
   if (imageset.shaking > 0) {
     imageset.shaking--;    
-    imageset.offset_x = Math.floor(Math.random() * 8) - 4;
-    imageset.offset_y = Math.floor(Math.random() * 8) - 4;
+    imageset.offset_x = Math.floor(Math.random() * 2 * imageset.shake_radius) - imageset.shake_radius;
+    imageset.offset_y = Math.floor(Math.random() * 2 * imageset.shake_radius) - imageset.shake_radius;
   }
   else {
     imageset.offset_x = 0;

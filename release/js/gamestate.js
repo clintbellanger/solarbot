@@ -13,6 +13,7 @@ function gamestate_logic() {
     case STATE_EXPLORE:
       rover.logic();
       powerups.logic();
+	  imageset.logic();
       break;
   } 
 }

@@ -75,7 +75,10 @@ labyrinth.valid_room = function(room_x, room_y) {
 }
 
 labyrinth.get_tile = function(grid_x, grid_y) {
-    
+
+  // out of bounds counts as tile 0 (no tile)
+  if (grid_x < 0 || grid_y < 0 || grid_x >= labyrinth.room_tile_width || grid_y >= labyrinth.room_tile_height) return 0;
+
   return labyrinth.room_tiles[grid_y][grid_x]; 
 }
 
