@@ -68,9 +68,10 @@ function init() {
   labyrinth.init();
   powerups.init();
   rover.init();
+  particles.init();
   battery.init();
   minimap.init();
-
+  
   init_complete = true;
 }
 

@@ -3,6 +3,13 @@
   - Solar powered
   - Not weaponized
   - Can be upgraded
+ 
+ This rover class has slowly grown to contain a lot of different core functionality.
+ TODO: split the monolith rover up into sub-object classes with separate duties.
+  The animations can be done separately from the base movement.
+  Hazard collisions can be done in a separate class.
+  Some calculations can be factored into new functions e.g. accelerate(x,dx,dx/f,max,dampen)
+  
  */
 
 var FACING_LEFT = 0;
@@ -87,6 +94,7 @@ rover.init = function() {
   // after taking damage, invulnerable for a moment
   rover.invulnerable_frames = 0;
   rover.invulnerable_length = 45;
+  rover.died = false;
   
 }
 
@@ -138,7 +146,26 @@ rover.logic = function() {
   // temporary statuses
   if (rover.invulnerable_frames > 0) rover.invulnerable_frames--;
   
+  rover.check_death();
 }
+
+/**
+ Death animations, etc.
+ */
+rover.dead_logic = function() {
+
+  redraw = true;
+  if (rover.y > VIEW_HEIGHT) return;
+    
+  // fall off bottom of screen
+  rover.on_ground = false;
+  rover.apply_gravity();
+  
+  // keep momentum
+  rover.x += rover.speed_x;
+  rover.y += rover.speed_y;
+}
+
 
 /**** Rover acceleration functions *******************************************/
 
@@ -309,11 +336,7 @@ rover.check_spikes = function() {
   if (rover.on_ground) {
   
     if (collision.checkSpikesBelow(cbox, 1)) {
-	  imageset.shaking = 10;
-	  imageset.freeze_frames = 5;
-	  rover.invulnerable_frames = rover.invulnerable_length;
-	  battery.spend_energy(2);
-	  
+	  rover.take_damage(2);
 	}  
 	
   }
@@ -321,16 +344,36 @@ rover.check_spikes = function() {
   else {
 
     if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
-	  imageset.shaking = 10;
-	  imageset.freeze_frames = 5;
-	  rover.invulnerable_frames = rover.invulnerable_length;
-	  battery.spend_energy(2);	  
+	  rover.take_damage(2);
     }	
 	
   }
 }
  
+rover.take_damage = function(dmg) {
+  imageset.shaking = 10;
+  imageset.freeze_frames = 5;
+  rover.invulnerable_frames = rover.invulnerable_length;
+  battery.spend_energy(2);
+  
+  for (var i=0; i<10; i++) {
+    particles.add(particles.SPARK, rover.x + Math.random() * rover.width, rover.y + Math.random() * rover.height);
+  }    
+}
 
+rover.check_death = function() {
+  if (battery.charge <= 0) {
+    rover.died = true;
+	
+    particles.add(particles.WHEEL, rover.x + rover.wheel_left.x_offset, rover.y + rover.wheel_left.y_offset);
+    particles.add(particles.WHEEL, rover.x + rover.wheel_right.x_offset, rover.y + rover.wheel_right.y_offset);
+
+    for (var i=0; i<50; i++) {
+      particles.add(particles.SPARK, rover.x + Math.random() * rover.width, rover.y + Math.random() * rover.height);
+    }    
+
+  }
+}
 
 /**** Rover animation functions **********************************************/
 
@@ -449,6 +492,15 @@ rover.render = function() {
   if (powerups.doublejump.used && rover.jump_startup_frames_remaining > 0) {
     powerups.render_doublejump(rover.x, rover.y);
   }
+}
+
+rover.dead_render = function() {
+  rover.render_chassis();
+  
+  // TODO: make particles out of head and wheels
+  rover.render_head();
+  //rover.render_wheel(rover.wheel_left);
+  //rover.render_wheel(rover.wheel_right);  
 }
 
 rover.render_chassis = function() {

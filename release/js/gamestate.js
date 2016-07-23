@@ -22,7 +22,19 @@ function gamestate_logic() {
       powerups.logic();
 	  imageset.logic();
 	  battery.logic();
+	  particles.logic();
+	  
+	  if (rover.died) gamestate = STATE_DEAD;
+	  
       break;
+	  
+	case STATE_DEAD:	
+	  rover.dead_logic();
+	  imageset.logic();
+	  battery.logic();
+	  particles.logic();
+	  
+	  break;
   } 
 }
 
@@ -35,9 +47,19 @@ function gamestate_render() {
     case STATE_EXPLORE:
       labyrinth.draw_room();
       rover.render();	  
+	  particles.render();
       battery.render();
       minimap.render();
+	  
       break;
+	  
+	case STATE_DEAD:
+      labyrinth.draw_room();
+      rover.dead_render();	  
+	  particles.render();
+      battery.render();
+      minimap.render();	
+	  break;
   }
 }
 
