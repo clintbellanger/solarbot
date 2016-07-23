@@ -40,7 +40,7 @@ var ALTCODE_UP     = 87; // w
 var ALTCODE_DOWN   = 83; // s
 var ALTCODE_LEFT   = 65; // a
 var ALTCODE_RIGHT  = 68; // d
-var ALTCODE_ACTION = 13; // enter
+var ALTCODE_ACTION = 90; // z
 
 //---- Input Functions ----------------------------------------------
 
@@ -61,7 +61,9 @@ function handleKeyDown(evt) {
     pressing.right = true;
   }
   else if (evt.keyCode == KEYCODE_ACTION || evt.keyCode == ALTCODE_ACTION) {
-    pressing.action = true;
+    //pressing.action = true;
+	// reuse action as extra jump options
+	pressing.up = true;
   }
   
 }
@@ -85,8 +87,10 @@ function handleKeyUp(evt) {
 	input_lock.right = false;
   }
   else if (evt.keyCode == KEYCODE_ACTION || evt.keyCode == ALTCODE_ACTION) {
-    pressing.action = false;
-	input_lock.action = false;  
+    //pressing.action = false;
+	//input_lock.action = false;
+    pressing.up = false;
+	input_lock.up = false;	
   }
 
 }
