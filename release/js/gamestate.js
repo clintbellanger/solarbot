@@ -14,6 +14,7 @@ function gamestate_logic() {
       rover.logic();
       powerups.logic();
 	  imageset.logic();
+	  battery.logic();
       break;
   } 
 }

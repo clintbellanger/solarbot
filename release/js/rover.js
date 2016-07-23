@@ -304,19 +304,24 @@ rover.check_spikes = function() {
   if (rover.invulnerable_frames > 0) return;
   
   cbox = rover.get_collision_box();
-  if (rover.on_ground) { // check for floor spikes
+  
+  // check floor spikes
+  if (rover.on_ground) {
   
     if (collision.checkSpikesBelow(cbox, 1)) {
 	  imageset.shaking = 10;
 	  rover.invulnerable_frames = rover.invulnerable_length;
+	  battery.spend_energy(2);
 	}  
 	
   }
-  else { // check for ceiling spikes
+  // check ceiling spikes
+  else {
 
     if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
 	  imageset.shaking = 10;
 	  rover.invulnerable_frames = rover.invulnerable_length;
+	  battery.spend_energy(2);
     }	
 	
   }
