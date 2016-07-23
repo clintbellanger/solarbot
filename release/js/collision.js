@@ -28,6 +28,10 @@ collision.tileHasCollision = function(grid_x, grid_y) {
   return tileset.tile_metadata[tile_id].collide;
 }
 
+collision.pixelHasCollision = function(px, py) {
+  return collision.tileHasCollision(Math.floor(px / tileset.tile_size), Math.floor(py / tileset.tile_size));
+}
+
 /**
  * convert position (x.y) floats to grid ints
  */

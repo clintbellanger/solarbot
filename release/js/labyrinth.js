@@ -82,6 +82,10 @@ labyrinth.get_tile = function(grid_x, grid_y) {
   return labyrinth.room_tiles[grid_y][grid_x]; 
 }
 
+labyrinth.get_tile_by_pixel = function(pixel_x, pixel_y) {
+  return labyrinth.get_tile(Math.floor(pixel_x), Math.floor(pixel_y));
+}
+
 labyrinth.load_room = function(room_x, room_y) {
 
   labyrinth.current_room_x = room_x;

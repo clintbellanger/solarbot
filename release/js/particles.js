@@ -101,9 +101,20 @@ particles.apply_gravity = function(pid) {
 }
 
 particles.move = function(pid) {
-  var p = particles.plist[pid];
+  var p = particles.plist[pid];  
+
+  p.y += p.dy;  
+  if (collision.pixelHasCollision(p.x, p.y)) {
+    p.y -= p.dy;
+	p.dy = -0.9 * p.dy; // bounce and dampen
+  }
+  
   p.x += p.dx;
-  p.y += p.dy;
+  if (collision.pixelHasCollision(p.x, p.y)) {
+    p.x -= p.dx;
+	p.dx = -0.9 * p.dx; // bounce and dampen
+  }
+  
 }
 
 particles.leave_screen = function(pid) {
