@@ -4,10 +4,17 @@
  */
 
 var STATE_EXPLORE = 1;
- 
+var STATE_DEAD = 2;
+
 var gamestate = STATE_EXPLORE;
 
 function gamestate_logic() {
+
+  // halt all game logic (used for hit stun emphasis)
+  if (imageset.freeze_frames > 0) {
+    imageset.freeze_frames--;
+	return;
+  }
 
   switch(gamestate) {
     case STATE_EXPLORE:

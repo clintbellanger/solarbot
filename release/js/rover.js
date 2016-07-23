@@ -86,7 +86,7 @@ rover.init = function() {
 
   // after taking damage, invulnerable for a moment
   rover.invulnerable_frames = 0;
-  rover.invulnerable_length = 45; 
+  rover.invulnerable_length = 45;
   
 }
 
@@ -310,8 +310,10 @@ rover.check_spikes = function() {
   
     if (collision.checkSpikesBelow(cbox, 1)) {
 	  imageset.shaking = 10;
+	  imageset.freeze_frames = 5;
 	  rover.invulnerable_frames = rover.invulnerable_length;
 	  battery.spend_energy(2);
+	  
 	}  
 	
   }
@@ -320,8 +322,9 @@ rover.check_spikes = function() {
 
     if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
 	  imageset.shaking = 10;
+	  imageset.freeze_frames = 5;
 	  rover.invulnerable_frames = rover.invulnerable_length;
-	  battery.spend_energy(2);
+	  battery.spend_energy(2);	  
     }	
 	
   }

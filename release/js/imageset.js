@@ -11,6 +11,7 @@ imageset.init = function() {
   imageset.offset_y = 0;
   imageset.shaking = 0;
   imageset.shake_radius = 4;
+  imageset.freeze_frames = 0;
 }
 
 /**
