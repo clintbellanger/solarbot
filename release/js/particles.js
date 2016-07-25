@@ -18,6 +18,7 @@ particles.init = function() {
   
   particles.info[particles.SPARK] = new Object();
   particles.info[particles.SPARK].size = 1;
+  particles.info[particles.SPARK].half = 0;  
   particles.info[particles.SPARK].frame_count = 3;
   particles.info[particles.SPARK].frame_duration = 30;
   particles.info[particles.SPARK].looping = false;
@@ -29,7 +30,8 @@ particles.init = function() {
   particles.info[particles.SPARK].dy_radius = 2;
   
   particles.info[particles.WHEEL] = new Object();
-  particles.info[particles.WHEEL].size = 7;
+  particles.info[particles.WHEEL].size = 6;
+  particles.info[particles.WHEEL].half = 3;
   particles.info[particles.WHEEL].frame_count = 8;
   particles.info[particles.WHEEL].frame_duration = 4;
   particles.info[particles.WHEEL].looping = true;
@@ -56,8 +58,8 @@ particles.add = function(type, x, y) {
   var p = new Object();
   var info = particles.info[type];
   p.type = type;
-  p.x = x - info.size/2;
-  p.y = y - info.size/2;
+  p.x = x;
+  p.y = y;
   
   p.dx = (Math.random() * 2 * info.dx_radius) - info.dx_radius;
   p.dy = (Math.random() * 2 * info.dy_radius) - info.dy_radius;
@@ -139,9 +141,9 @@ particles.render_single = function(pid) {
   
   imageset.render(
     particles.img,
-	info.frame[f].x, info.frame[f].y,
-	info.size, info.size,
-	Math.floor(p.x),
-    Math.floor(p.y)
+	  info.frame[f].x, info.frame[f].y,
+	  info.size, info.size,
+  	Math.floor(p.x) - info.half,
+    Math.floor(p.y) - info.half
   );
 }
