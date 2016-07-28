@@ -25,7 +25,7 @@ collision.tileHasCollision = function(grid_x, grid_y) {
   if (grid_x >= labyrinth.room_tile_width || grid_y >= labyrinth.room_tile_height) return false;
   
   var tile_id = labyrinth.get_tile(grid_x, grid_y);
-  return tileset.tile_metadata[tile_id].collide;
+  return tileset.info[tile_id].collide;
 }
 
 collision.pixelHasCollision = function(px, py) {
@@ -136,8 +136,8 @@ collision.checkSpikesAbove = function(rect, speed_y) {
   var grid_right = collision.posToGrid(rect.x + rect.w-1);
 
   // get tile metadata for these two tiles
-  var left_tile = tileset.tile_metadata[labyrinth.get_tile(grid_left,grid_y)];
-  var right_tile = tileset.tile_metadata[labyrinth.get_tile(grid_right,grid_y)];
+  var left_tile = tileset.info[labyrinth.get_tile(grid_left,grid_y)];
+  var right_tile = tileset.info[labyrinth.get_tile(grid_right,grid_y)];
   
   // one of the above tiles must be a hazard
   var spikes_found = (left_tile.hazardous_bottom || right_tile.hazardous_bottom);
@@ -161,8 +161,8 @@ collision.checkSpikesBelow = function(rect, speed_y) {
   var grid_right = collision.posToGrid(rect.x + rect.w-1);
 
   // get tile metadata for these two tiles
-  var left_tile = tileset.tile_metadata[labyrinth.get_tile(grid_left,grid_y)];
-  var right_tile = tileset.tile_metadata[labyrinth.get_tile(grid_right,grid_y)];
+  var left_tile = tileset.info[labyrinth.get_tile(grid_left,grid_y)];
+  var right_tile = tileset.info[labyrinth.get_tile(grid_right,grid_y)];
   
   // one of the above tiles must be a hazard
   var spikes_found = (left_tile.hazardous_top || right_tile.hazardous_top);
