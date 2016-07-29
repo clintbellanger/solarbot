@@ -16,6 +16,7 @@ pressing.left = false;
 pressing.right = false;
 pressing.action = false;
 pressing.mouse = false;
+pressing.escape = false;
 
 var input_lock = new Object();
 input_lock.up = false;
@@ -24,6 +25,7 @@ input_lock.left = false;
 input_lock.right = false;
 input_lock.action = false;
 input_lock.mouse = false;
+input_lock.escape = false;
 
 var mouse_pos = {x:0, y:0};
 
@@ -34,6 +36,7 @@ var KEYCODE_DOWN   = 40; // arrow down
 var KEYCODE_LEFT   = 37; // arrow left
 var KEYCODE_RIGHT  = 39; // arrow right
 var KEYCODE_ACTION = 32; // space
+var KEYCODE_ESCAPE = 27; // esc
 
 // secondary
 var ALTCODE_UP     = 87; // w
@@ -41,6 +44,7 @@ var ALTCODE_DOWN   = 83; // s
 var ALTCODE_LEFT   = 65; // a
 var ALTCODE_RIGHT  = 68; // d
 var ALTCODE_ACTION = 90; // z
+var ALTCODE_ESCAPE =  9; // tab
 
 //---- Input Functions ----------------------------------------------
 
@@ -64,6 +68,9 @@ function handleKeyDown(evt) {
     //pressing.action = true;
 	// reuse action as extra jump options
 	pressing.up = true;
+  }
+  else if (evt.keyCode == KEYCODE_ESCAPE || evt.keyCode == ALTCODE_ESCAPE) {
+	pressing.escape = true;
   }
   
 }
@@ -92,7 +99,10 @@ function handleKeyUp(evt) {
     pressing.up = false;
 	input_lock.up = false;	
   }
-
+  else if (evt.keyCode == KEYCODE_ESCAPE || evt.keyCode == ALTCODE_ESCAPE) {
+	pressing.escape = false;
+	input_lock.escape = false;
+  }
 }
 
 function handleMouseDown(evt) {
