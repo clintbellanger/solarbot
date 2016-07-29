@@ -106,8 +106,8 @@ rover.get_collision_box = function() {
 
   return {x:rover.x + rover.margin_left,
           y:rover.y + rover.margin_top,
-		  w:rover.width - (rover.margin_left + rover.margin_right),
-		  h:rover.height - (rover.margin_top + rover.margin_bottom)};
+          w:rover.width - (rover.margin_left + rover.margin_right),
+          h:rover.height - (rover.margin_top + rover.margin_bottom)};
 }
 
 rover.logic = function() {
@@ -223,24 +223,33 @@ rover.jump = function() {
   // check doublejump
   if (powerups.doublejump.acquired && !powerups.doublejump.used) {
     if (pressing.up && !input_lock.up && !rover.on_ground) {
-	  input_lock.up = true; // must release this button before jumping again
-	  rover.jump_startup_frames_remaining = rover.jump_max_frames;
-	  powerups.doublejump.used = true; // resets upon landing
-	}
+        input_lock.up = true; // must release this button before jumping again
+        rover.jump_startup_frames_remaining = rover.jump_max_frames;
+        powerups.doublejump.used = true; // resets upon landing
+      }
   }  
   
   // check regular jump
   if (pressing.up && !input_lock.up && rover.on_ground) {
-	input_lock.up = true; // must release this button before jumping again
+    input_lock.up = true; // must release this button before jumping again
     rover.on_ground = false;
-	rover.jump_startup_frames_remaining = rover.jump_max_frames;
+    rover.jump_startup_frames_remaining = rover.jump_max_frames;
   }
   
   // holding jump to jump higher
-  if (pressing.up && rover.jump_startup_frames_remaining > 0) {	
-	// accelerate up	
-	rover.speed_y = rover.jump_speed_y;
-	rover.jump_startup_frames_remaining--;
+  if (pressing.up && rover.jump_startup_frames_remaining > 0) {    
+      
+    // accelerate up    
+    rover.speed_y = rover.jump_speed_y;
+    rover.jump_startup_frames_remaining--;
+    
+    // visual effects from active power ups
+    if (powerups.doublejump.used && rover.jump_startup_frames_remaining > 0) {
+      particles.preset_sparks_thrust(rover.x+8, rover.y+13, rover.speed_x, rover.speed_y, 1);
+      particles.preset_smoke(rover.x+8, rover.y+20, rover.speed_x, rover.speed_y, 1);
+      imageset.vibrating=1;      
+    }
+    
   }
 }
 
@@ -250,7 +259,7 @@ rover.jump = function() {
 rover.apply_gravity = function() {
   if (!rover.on_ground) {
     rover.speed_y += rover.gravity_acceleration;
-	if (rover.speed_y > rover.max_fall_speed) rover.speed_y = rover.max_fall_speed;
+    if (rover.speed_y > rover.max_fall_speed) rover.speed_y = rover.max_fall_speed;
   } 
 }
 
@@ -276,7 +285,7 @@ rover.move_left = function() {
   if (!blocked) rover.x += rover.speed_x;
   else {
     rover.x = collision.snapLeft(cbox.x) - rover.margin_left;
-	rover.speed_x = 0;
+    rover.speed_x = 0;
   }
 }
 
@@ -288,7 +297,7 @@ rover.move_right = function() {
   }
   else {
     rover.x = collision.snapRight(cbox.x, cbox.w) - rover.margin_left;
-	rover.speed_x = 0;
+    rover.speed_x = 0;
   }
 }
 
@@ -298,8 +307,8 @@ rover.move_up = function() {
   if (!blocked) rover.y += rover.speed_y;
   else {    
     rover.y = collision.snapUp(cbox.y) - rover.margin_top;
-	rover.speed_y = 0;
-	rover.jump_startup_frames_remaining = 0;
+    rover.speed_y = 0;
+    rover.jump_startup_frames_remaining = 0;
   }
 }
 
@@ -309,10 +318,10 @@ rover.move_down = function() {
   if (!blocked) rover.y += rover.speed_y;
   else {
     rover.y = collision.snapDown(cbox.y, cbox.h) - rover.margin_top;
-	rover.speed_y = 0;
+    rover.speed_y = 0;
     rover.on_ground = true;
     rover.landing_frames_remaining = rover.landing_max_frames;
-	powerups.doublejump.used = false;
+    powerups.doublejump.used = false;
   }
 }
 
@@ -336,17 +345,17 @@ rover.check_spikes = function() {
   if (rover.on_ground) {
   
     if (collision.checkSpikesBelow(cbox, 1)) {
-	  rover.take_damage(2);
-	}  
-	
+      rover.take_damage(2);
+    }  
+    
   }
   // check ceiling spikes
   else {
 
     if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
-	  rover.take_damage(2);
-    }	
-	
+      rover.take_damage(2);
+    }    
+    
   }
 }
  
@@ -355,23 +364,20 @@ rover.take_damage = function(dmg) {
   imageset.freeze_frames = 5;
   rover.invulnerable_frames = rover.invulnerable_length;
   battery.spend_energy(2);
-  
-  for (var i=0; i<10; i++) {
-    particles.add(particles.SPARK, rover.x + Math.random() * rover.width, rover.y + Math.random() * rover.height);
-  }    
+  particles.preset_sparks_area(rover.get_collision_box(), 10);
 }
 
 rover.check_death = function() {
   if (battery.charge <= 0) {
     rover.died = true;
-	
-    particles.add(particles.WHEEL, rover.x + rover.wheel_left.x_offset, rover.y + rover.wheel_left.y_offset);
-    particles.add(particles.WHEEL, rover.x + rover.wheel_right.x_offset, rover.y + rover.wheel_right.y_offset);
+    
+    // max initial delta (speed) of wheel particle along x/y
+    var maxd = 4;    
+    particles.add(particles.WHEEL, rover.x + rover.wheel_left.x_offset, rover.y + rover.wheel_left.y_offset, random_between(-maxd, maxd), random_between(-maxd, maxd));
+    particles.add(particles.WHEEL, rover.x + rover.wheel_right.x_offset, rover.y + rover.wheel_right.y_offset, random_between(-maxd, maxd), random_between(-maxd, maxd));
 
-    for (var i=0; i<50; i++) {
-      particles.add(particles.SPARK, rover.x + Math.random() * rover.width, rover.y + Math.random() * rover.height);
-    }    
-
+    particles.preset_sparks_area(rover.get_collision_box(), 50);
+    
   }
 }
 
@@ -429,14 +435,14 @@ rover.position_wheels = function() {
     rover.wheel_left.x_offset = 1;
     rover.wheel_left.y_offset = 12;
     rover.wheel_right.x_offset = 10;
-    rover.wheel_right.y_offset = 12;	 
+    rover.wheel_right.y_offset = 12;     
   }
   // spread wheels out on landing
   else if (rover.landing_frames_remaining > 0) {
     rover.wheel_left.x_offset = -1;
     rover.wheel_left.y_offset = 10;
     rover.wheel_right.x_offset = 12;
-    rover.wheel_right.y_offset = 10;	     
+    rover.wheel_right.y_offset = 10;         
   }
   // neutral position
   else {
@@ -451,7 +457,7 @@ rover.position_wheels = function() {
 rover.position_chassis = function() {
   if (rover.landing_frames_remaining > 0) {
     rover.chassis_offset_y = 1;
-	rover.landing_frames_remaining--;
+    rover.landing_frames_remaining--;
   }
   else {
     rover.chassis_offset_y = 0;
@@ -461,20 +467,24 @@ rover.position_chassis = function() {
 rover.screen_wrap = function() {
   if (rover.x + rover.width/2 > VIEW_WIDTH) {
     rover.x -= VIEW_WIDTH;
-	labyrinth.load_room(labyrinth.current_room_x+1, labyrinth.current_room_y);
+    particles.reset();
+    labyrinth.load_room(labyrinth.current_room_x+1, labyrinth.current_room_y);
   }
   else if (rover.x < -1 * rover.width/2) {
     rover.x += VIEW_WIDTH;
-	labyrinth.load_room(labyrinth.current_room_x-1, labyrinth.current_room_y);
+    particles.reset();
+    labyrinth.load_room(labyrinth.current_room_x-1, labyrinth.current_room_y);
   }
   
   if (rover.y + rover.height/2 > VIEW_HEIGHT) {
     rover.y -= VIEW_HEIGHT;
-	labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y+1);
+    particles.reset();
+    labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y+1);
   }
   else if (rover.y < -1 * rover.height/2) {
     rover.y += VIEW_HEIGHT;
-	labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y-1);
+    particles.reset();
+    labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y-1);
   }  
   
 }
@@ -506,9 +516,9 @@ rover.dead_render = function() {
 rover.render_chassis = function() {
   imageset.render(
     rover.chassis,
-	 0,0,
-	 rover.width,rover.height,
-	 Math.floor(rover.x), Math.floor(rover.y + rover.chassis_offset_y)
+     0,0,
+     rover.width,rover.height,
+     Math.floor(rover.x), Math.floor(rover.y + rover.chassis_offset_y)
   );
 }
 
@@ -521,18 +531,18 @@ rover.render_wheel = function(wheel) {
 
   imageset.render(
     rover.wheels,
-	 8 * animation_frame + 1,2,
-	 5,6,
-	 x,y
+     8 * animation_frame + 1,2,
+     5,6,
+     x,y
   );
 }
 
 rover.render_head = function() {
   imageset.render(
     rover.head,
-	 (rover.head_frame * 16),0,
-	 16,6,
-	 Math.floor(rover.x), Math.floor(rover.y) + rover.chassis_offset_y
+     (rover.head_frame * 16),0,
+     16,6,
+     Math.floor(rover.x), Math.floor(rover.y) + rover.chassis_offset_y
   );
 
 }

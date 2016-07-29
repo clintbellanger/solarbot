@@ -85,3 +85,8 @@ function clear_canvas(fillStyle) {
   ctx.fillStyle = fillStyle;
   ctx.fillRect(0, 0, VIEW_WIDTH * SCALE, VIEW_HEIGHT * SCALE);  
 }
+
+function random_between(n1, n2) {
+  var range = n2 - n1;
+  return (Math.random() * range) + n1;
+}

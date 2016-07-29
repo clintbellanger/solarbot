@@ -13,28 +13,28 @@ function gamestate_logic() {
   // halt all game logic (used for hit stun emphasis)
   if (imageset.freeze_frames > 0) {
     imageset.freeze_frames--;
-	return;
+    return;
   }
 
   switch(gamestate) {
     case STATE_EXPLORE:
       rover.logic();
       powerups.logic();
-	  imageset.logic();
-	  battery.logic();
-	  particles.logic();
-	  
-	  if (rover.died) gamestate = STATE_DEAD;
-	  
+      imageset.logic();
+      battery.logic();
+      particles.logic();
+      
+      if (rover.died) gamestate = STATE_DEAD;
+      
       break;
-	  
-	case STATE_DEAD:	
-	  rover.dead_logic();
-	  imageset.logic();
-	  battery.logic();
-	  particles.logic();
-	  
-	  break;
+      
+    case STATE_DEAD:    
+      rover.dead_logic();
+      imageset.logic();
+      battery.logic();
+      particles.logic();
+      
+      break;
   } 
 }
 
@@ -46,20 +46,27 @@ function gamestate_render() {
   
     case STATE_EXPLORE:
       labyrinth.draw_room();
-      rover.render();	  
-	  particles.render();
+      particles.render();
+      rover.render();            
       battery.render();
       minimap.render();
-	  
+      
       break;
-	  
-	case STATE_DEAD:
+      
+    case STATE_DEAD:
       labyrinth.draw_room();
-      rover.dead_render();	  
-	  particles.render();
+      rover.dead_render();      
+      particles.render();
       battery.render();
-      minimap.render();	
-	  break;
+      minimap.render();
+      
+      if (pressing.escape && !input_lock.escape) {
+        input_lock.escape = true;
+        gamestate = STATE_EXPLORE;
+        reset_game();        
+      }
+      
+      break;
   }
 }
 

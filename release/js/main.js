@@ -62,7 +62,13 @@ function init() {
     OPTIONS = JSON.parse(json_save);
   }
 
-  // initialize all game units
+  init_all();
+  
+  init_complete = true;
+}
+
+// initialize all game units
+function init_all() {  
   imageset.init();
   tileset.init();
   labyrinth.init();
@@ -70,8 +76,20 @@ function init() {
   rover.init();
   particles.init();
   battery.init();
-  minimap.init();
-  
-  init_complete = true;
+  minimap.init();  
 }
 
+// initialize all game units changed during gameplay
+function reset_game() {
+  // imageset.init() skipped, we don't want to reload images
+  // tileset.init() is a static data class
+  // powerups.init() is currently static
+  
+  // labyrinth.init() is mostly static, except it does cache the current room. Probably should be split.  
+  labyrinth.init();
+  particles.init();
+  rover.init();
+  battery.init();
+  minimap.init();  
+  gamestate = STATE_EXPLORE; // TODO: circular dependency?
+}
