@@ -61,7 +61,7 @@ particles.init = function() {
   particles.info[particles.SMOKE].frame[4] = {x:32, y:12};
   particles.info[particles.SMOKE].frame[5] = {x:40, y:12};
   particles.info[particles.SMOKE].frame[6] = {x:48, y:12};
-  particles.info[particles.SMOKE].frame[7] = {x:56, y:21};   
+  particles.info[particles.SMOKE].frame[7] = {x:56, y:12};   
   
   
   particles.plist = [];
