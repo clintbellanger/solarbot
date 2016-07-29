@@ -224,7 +224,7 @@ rover.jump = function() {
   if (powerups.doublejump.acquired && !powerups.doublejump.used) {
     if (pressing.up && !input_lock.up && !rover.on_ground) {
         input_lock.up = true; // must release this button before jumping again
-        rover.jump_startup_frames_remaining = rover.jump_max_frames;
+        rover.jump_startup_frames_remaining = powerups.doublejump.max_frames;
         powerups.doublejump.used = true; // resets upon landing
       }
   }  

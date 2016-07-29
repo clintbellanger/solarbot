@@ -8,6 +8,7 @@ powerups.init = function() {
   // usage properties
   powerups.doublejump.acquired = true;
   powerups.doublejump.used = false;
+  powerups.doublejump.max_frames = 1000;
   
   // animation properties
   powerups.doublejump.img = imageset.load("images/powerup_effect_doublejump.png");  
