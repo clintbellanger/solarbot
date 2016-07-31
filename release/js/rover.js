@@ -245,8 +245,8 @@ rover.jump = function() {
     
     // visual effects from active power ups
     if (powerups.doublejump.used && rover.jump_startup_frames_remaining > 0) {
-      particles.preset_sparks_thrust(rover.x+8, rover.y+13, rover.speed_x, rover.speed_y, 1);
-      particles.preset_smoke(rover.x+8, rover.y+20, rover.speed_x, rover.speed_y, 1);
+      particles.preset_smoke_thrust(rover.x+8, rover.y+20, rover.speed_x, rover.speed_y);
+      particles.preset_sparks_thrust(rover.x+8, rover.y+13, rover.speed_x, rover.speed_y);	  
       imageset.vibrating=1;      
     }
     
@@ -363,7 +363,7 @@ rover.take_damage = function(dmg) {
   imageset.shaking = 10;
   imageset.freeze_frames = 5;
   rover.invulnerable_frames = rover.invulnerable_length;
-  battery.spend_energy(2);
+  battery.spend_energy(dmg);
   particles.preset_sparks_area(rover.get_collision_box(), 10);
 }
 
@@ -504,10 +504,9 @@ rover.render = function() {
   }
 }
 
+// TODO: replace entirely particles
 rover.dead_render = function() {
   rover.render_chassis();
-  
-  // TODO: make particles out of head and wheels
   rover.render_head();
   //rover.render_wheel(rover.wheel_left);
   //rover.render_wheel(rover.wheel_right);  
