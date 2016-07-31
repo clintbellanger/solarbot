@@ -19,7 +19,6 @@ function gamestate_logic() {
   switch(gamestate) {
     case STATE_EXPLORE:
       rover.logic();
-      powerups.logic();
       imageset.logic();
       battery.logic();
       particles.logic();
