@@ -75,6 +75,7 @@ function init_all() {
   powerups.init();
   rover.init();
   particles.init();
+  pickups.init();
   battery.init();
   minimap.init();  
 }
@@ -82,12 +83,11 @@ function init_all() {
 // initialize all game units changed during gameplay
 function reset_game() {
   // imageset.init() skipped, we don't want to reload images
-  // tileset.init() is a static data class
-  // powerups.init() is currently static
+  // some other objects are essentially static
   
-  // labyrinth.init() is mostly static, except it does cache the current room. Probably should be split.  
   labyrinth.init();
   particles.init();
+  pickups.init();
   rover.init();
   battery.init();
   minimap.init();  
