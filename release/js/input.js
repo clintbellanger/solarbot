@@ -30,9 +30,11 @@ input_lock.escape = false;
 var mouse_pos = {x:0, y:0};
 
 var virtual_buttons = new Object();
-virtual_buttons.left = {x:0, y:96, w:32, h:32};
-virtual_buttons.right = {x:96, y:96, w:32, h:32};
-virtual_buttons.up = {x:0, y:32, w:128, h:64};
+
+// bleed over canvas by 1 tile size, helps with touching edges
+virtual_buttons.left = {x:-16, y:80, w:80, h:64};
+virtual_buttons.right = {x:64, y:80, w:80, h:64};
+virtual_buttons.up = {x:-16, y:32, w:160, h:48};
 
 
 
