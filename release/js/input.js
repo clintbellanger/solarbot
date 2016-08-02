@@ -29,6 +29,13 @@ input_lock.escape = false;
 
 var mouse_pos = {x:0, y:0};
 
+var virtual_buttons = new Object();
+virtual_buttons.left = {x:0, y:96, w:32, h:32};
+virtual_buttons.right = {x:96, y:96, w:32, h:32};
+virtual_buttons.up = {x:0, y:32, w:128, h:64};
+
+
+
 //---- Key Bindings -------------------------------------------------
 
 var KEYCODE_UP     = 38; // arrow up
@@ -137,37 +144,98 @@ function clickCoord(evt) {
   canx /= SCALE;
   cany /= SCALE;
   
-  return {x:canx, y:cany}  
+  return {x:canx, y:cany};
 }
 
 /** Touch Handler **/
+// multi-touch heavily borrowing from:
+// https://developer.mozilla.org/en-US/docs/Web/API/Touch_events#Example
+
+var ongoingTouches = new Array();
 
 function handleTouchStart(evt) {
   evt.preventDefault();
-  pressing.mouse = true;
-  mouse_pos = touchCoord(evt);
-  simulatePress();
+  var touches = evt.changedTouches;
+  
+  for (var i=0; i < touches.length; i++) {
+    ongoingTouches.push(copyTouch(touches[i]));
+	touchVirtualButtonPress(touches[i]);
+  }
 }
 
 function handleTouchEnd(evt) {
-  pressing.mouse = false;
-  input_lock.mouse = false;
-  simulateRelease();
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+  var index;
+  
+  for (var i=0; i<touches.length; i++) {
+    index = ongoingTouchById(touches[i].identifier);
+	if (index >= 0) {
+	  touchVirtualButtonRelease(ongoingTouches[index]);
+	  ongoingTouches.splice(index, 1);
+	}
+  }
 }
 
-function touchCoord(evt) {
-  var canx = evt.touches[0].pageX;
-  var cany = evt.touches[0].pageY;
-  
-  canx -= can.offsetLeft;
-  cany -= can.offsetTop;
+function copyTouch(touch) {
+  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+}
+
+function ongoingTouchById(idToFind) {
+  for (var i = 0; i < ongoingTouches.length; i++) {
+    var id = ongoingTouches[i].identifier;
+    
+    if (id == idToFind) {
+      return i;
+    }
+  }
+  return -1;    // not found
+}
+
+/** end multi-touch example from Mozilla **/
+
+function touchCoord(pageX, pageY) {
+  var canx = pageX - can.offsetLeft;
+  var cany = pageY - can.offsetTop;
   
   canx /= SCALE;
   cany /= SCALE;
   
-  return {x:canx, y:cany}  
+  return {x:canx, y:cany};
 }
 
+function touchVirtualButtonPress(touchEvt) {
+  touch_pos = touchCoord(touchEvt.pageX, touchEvt.pageY);
+  
+  if (collision.isWithin(touch_pos, virtual_buttons.left)) {
+    pressing.left = true;
+  }
+  if (collision.isWithin(touch_pos, virtual_buttons.right)) {
+    pressing.right = true;
+  }
+  if (collision.isWithin(touch_pos, virtual_buttons.up)) {
+    pressing.up = true;
+  }
+}
+
+function touchVirtualButtonRelease(touchEvt) {
+  touch_pos = touchCoord(touchEvt.pageX, touchEvt.pageY);
+  
+  if (collision.isWithin(touch_pos, virtual_buttons.left)) {
+    pressing.left = false;
+    input_lock.left = false;
+  }
+  if (collision.isWithin(touch_pos, virtual_buttons.right)) {	  
+    pressing.right = false;
+    input_lock.right = false;
+  }
+  if (collision.isWithin(touch_pos, virtual_buttons.up)) {
+    pressing.up = false;
+    input_lock.up = false;
+  }
+}
+
+// rougher mouse version
 function simulatePress() {
   if (mouse_pos.y > VIEW_HEIGHT/2) {
     if (mouse_pos.x < VIEW_WIDTH/2) {

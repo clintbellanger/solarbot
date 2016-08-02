@@ -15,7 +15,7 @@ function gamestate_logic() {
     imageset.freeze_frames--;
     return;
   }
-
+  
   switch(gamestate) {
     case STATE_EXPLORE:
       rover.logic();
