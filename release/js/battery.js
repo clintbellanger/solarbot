@@ -8,7 +8,7 @@ var battery = new Object();
 battery.init = function() {
 
   // logic values
-  battery.capacity = 8; // starting max amount of energy
+  battery.capacity = 4; // starting max amount of energy
   battery.charge = battery.capacity; // current amount of energy
 
   // display values
@@ -66,6 +66,10 @@ battery.gain_energy = function(amount) {
   if (battery.charge > battery.capacity) battery.charge = battery.capacity;
 }
 
+battery.add_capacity = function(amount) {
+  battery.capacity += amount;
+  battery.gain_energy(amount);
+}
 
 /**
  * The battery expands vertically as capacity increases

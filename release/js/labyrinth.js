@@ -50,7 +50,7 @@ labyrinth.init = function() {
   // should be set by hand anyway?
   labyrinth.minimap_room_tiles = [
     [8,12,14,12,6],
-	[8,12,13,12,5]
+	  [8,12,13,12,5]
   ];
 
   labyrinth.load_room(labyrinth.current_room_x, labyrinth.current_room_y);
@@ -93,9 +93,11 @@ labyrinth.load_room = function(room_x, room_y) {
   
    for (var i=0; i<8; i++) {
      for (var j=0; j<8; j++) {
-	   labyrinth.room_tiles[j][i] = labyrinth.world_tiles[room_y * labyrinth.room_tile_height + j][room_x * labyrinth.room_tile_width + i];
-	 }
+	     labyrinth.room_tiles[j][i] = labyrinth.world_tiles[room_y * labyrinth.room_tile_height + j][room_x * labyrinth.room_tile_width + i];
+	   }
    }
+   
+   pickups.load_room(room_x, room_y);
 }
 
 labyrinth.draw_room = function() {

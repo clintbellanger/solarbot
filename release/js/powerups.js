@@ -4,11 +4,17 @@ var powerups = new Object();
 
 powerups.init = function() {
 
+  // Jump acquired from jump coil pickup
+  powerups.jump = new Object();
+  powerups.jump.acquired = false;
+
+  // Double Jump acquired from booster pickup
   powerups.doublejump = new Object();
+  
   // usage properties
-  powerups.doublejump.acquired = true;
+  powerups.doublejump.acquired = false;
   powerups.doublejump.used = false;
-  powerups.doublejump.max_frames = 1000;
+  powerups.doublejump.max_frames = 20;
   
   // animation properties
   powerups.doublejump.img = imageset.load("images/powerup_effect_doublejump.png");  
@@ -16,7 +22,23 @@ powerups.init = function() {
   powerups.doublejump.sprite_offset_x = 4;
   powerups.doublejump.sprite_offset_y = 13;
   
+  // Double Jump becomes a sustained booster
+  powerups.booster = new Object();
+  powerups.booster.acquired = false;
   
+}
+
+powerups.acquire_jump = function() {
+   powerups.jump.acquired = true;
+}
+
+powerups.acquire_doublejump = function() {
+   powerups.doublejump.acquired = true; 
+}
+
+powerups.acquire_booster = function() {
+   powerups.booster.acquired = true;
+   powerups.doublejump.max_frames = 1000;   
 }
 
 powerups.render_doublejump = function(x,y) {

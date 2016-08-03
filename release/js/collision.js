@@ -11,11 +11,22 @@ var collision = new Object();
 collision.padding = 0.01;
 
 collision.isWithin = function(point, rect) {
-  if (point.x < rect.x) return false;
-  if (point.y < rect.y) return false;
-  if (point.x > rect.x + rect.w) return false;
-  if (point.y > rect.y + rect.h) return false;
-  return true;
+  if (point.x < rect.x) return false; // point left of rect
+  if (point.y < rect.y) return false; // point above rect
+  if (point.x > rect.x + rect.w) return false; // point right of rect
+  if (point.y > rect.y + rect.h) return false; // point below rect
+  return true; // otherwise, point is inside rect
+}
+
+// AABB
+collision.rectsOverlap = function(r1, r2) {
+  
+  if (r1.x + r1.w < r2.x) return false; // r1 completely left of r2
+  if (r1.x > r2.x + r2.w) return false; // r1 completely right of r2
+  if (r1.y + r1.h < r2.y) return false; // r1 completely above r2
+  if (r1.y > r2.y + r2.h) return false; // r1 completely below r2
+  return true; // otherwise, rectangles overlap
+  
 }
 
 collision.tileHasCollision = function(grid_x, grid_y) {

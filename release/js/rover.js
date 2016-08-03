@@ -212,6 +212,9 @@ rover.accelerate_air = function() {
  */
 rover.jump = function() {
   
+  // must have unlocked the jump ability
+  if (!powerups.jump.acquired) return;
+  
   // this function is about accelerating upward on input
   // If no longer pressing the jump button, let gravity do the rest.
   if (!pressing.up && !pressing.action) {
@@ -365,6 +368,7 @@ rover.take_damage = function(dmg) {
   rover.invulnerable_frames = rover.invulnerable_length;
   battery.spend_energy(dmg);
   particles.preset_sparks_area(rover.get_collision_box(), 10);
+  particles.preset_smoke_area(rover.get_collision_box(), 5);
 }
 
 rover.check_death = function() {

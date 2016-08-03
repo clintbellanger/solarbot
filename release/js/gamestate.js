@@ -21,7 +21,7 @@ function gamestate_logic() {
       rover.logic();
       imageset.logic();
       battery.logic();
-	  pickups.logic();
+	    pickups.logic();
       particles.logic();
       
       if (rover.died) gamestate = STATE_DEAD;
@@ -47,7 +47,8 @@ function gamestate_render() {
     case STATE_EXPLORE:
       labyrinth.draw_room();
       particles.render();
-      rover.render();	  
+      rover.render();
+      pickups.render();
       battery.render();
       minimap.render();
       

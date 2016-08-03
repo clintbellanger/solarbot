@@ -71,11 +71,11 @@ function init() {
 function init_all() {  
   imageset.init();
   tileset.init();
+  pickups.init();
   labyrinth.init();
   powerups.init();
   rover.init();
-  particles.init();
-  pickups.init();
+  particles.init();  
   battery.init();
   minimap.init();  
 }
@@ -84,10 +84,11 @@ function init_all() {
 function reset_game() {
   // imageset.init() skipped, we don't want to reload images
   // some other objects are essentially static
-  
-  labyrinth.init();
+    
   particles.init();
   pickups.init();
+  labyrinth.init();
+  powerups.init();
   rover.init();
   battery.init();
   minimap.init();  

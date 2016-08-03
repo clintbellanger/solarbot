@@ -203,6 +203,20 @@ particles.preset_sparks_area = function(bounding_box, number_of_particles) {
   
 }
 
+particles.preset_smoke_area = function(bounding_box, number_of_particles) {  
+
+  var x, y, dx, dy;
+  
+  for (var i=0; i<number_of_particles; i++) {  
+    x = random_between(bounding_box.x, bounding_box.x + bounding_box.w);
+    y = random_between(bounding_box.y, bounding_box.y + bounding_box.h);
+    dx = random_between(-0.25, 0.25);   
+    dy = random_between(-0.5, 0);
+    particles.add(particles.SMOKE,x,y,dx,dy);
+  }
+  
+}
+
 /**
  Sparks fly nearly straight down, used for double jump thrusters
  */
