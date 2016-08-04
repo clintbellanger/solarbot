@@ -15,7 +15,7 @@ tileset.init = function() {
   tileset.row_tilecount = 4;
   
   tileset.info = new Array();
-  for (var i=0; i<=16; i++) {
+  for (var i=0; i<=32; i++) {
     tileset.info[i] = new Object();
 	tileset.info[i].collide = false;
 	
@@ -37,6 +37,13 @@ tileset.init = function() {
   tileset.info[10].collide = true;
   tileset.info[11].collide = true;
   tileset.info[13].collide = true;
+  tileset.info[14].collide = true;
+  tileset.info[15].collide = true;
+  tileset.info[16].collide = true;
+  tileset.info[17].collide = true;
+  tileset.info[18].collide = true;
+  tileset.info[19].collide = true;
+  
   
   // tile atlas positions
   // using bleed and gutters to help with scaling artifacts
@@ -51,7 +58,14 @@ tileset.init = function() {
   tileset.info[9].src = {x:2, y:42};
   tileset.info[10].src = {x:22, y:42};
   tileset.info[11].src = {x:42, y:42};
-  tileset.info[12].src = {x:62, y:42};
+  tileset.info[12].src = {x:62, y:42};  
+  tileset.info[13].src = {x:2, y:62};
+  tileset.info[14].src = {x:22, y:62};
+  tileset.info[15].src = {x:42, y:62};
+  tileset.info[16].src = {x:62, y:62};
+  tileset.info[17].src = {x:2, y:82};
+  tileset.info[18].src = {x:22, y:82};
+  tileset.info[19].src = {x:42, y:82};
   
   
 }
