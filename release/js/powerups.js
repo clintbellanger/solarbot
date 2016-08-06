@@ -25,6 +25,7 @@ powerups.init = function() {
   // Double Jump becomes a sustained booster
   powerups.booster = new Object();
   powerups.booster.acquired = false;
+    
   
 }
 

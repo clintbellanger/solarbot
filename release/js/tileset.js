@@ -43,7 +43,10 @@ tileset.init = function() {
   tileset.info[17].collide = true;
   tileset.info[18].collide = true;
   tileset.info[19].collide = true;
-  
+  tileset.info[21].collide = true;
+  tileset.info[21].hazardous_top = true;
+  tileset.info[22].collide = true;
+  tileset.info[22].hazardous_bottom = true;
   
   // tile atlas positions
   // using bleed and gutters to help with scaling artifacts
@@ -66,6 +69,8 @@ tileset.init = function() {
   tileset.info[17].src = {x:2, y:82};
   tileset.info[18].src = {x:22, y:82};
   tileset.info[19].src = {x:42, y:82};
+  tileset.info[21].src = {x:2, y:102};
+  tileset.info[22].src = {x:22, y:102};
   
   
 }

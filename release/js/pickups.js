@@ -10,6 +10,7 @@ pickups.init = function() {
   pickups.JUMP = 1;
   pickups.DOUBLE_JUMP = 2;
   pickups.BOOSTER = 3;
+  pickups.ULTRA_BOOSTER = 4;
   
   pickups.info = new Array();
   
@@ -24,7 +25,7 @@ pickups.init = function() {
 
   pickups.info[pickups.BOOSTER] = new Object();
   pickups.info[pickups.BOOSTER].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
-
+  
   // shared animation properties
   pickups.current_frame = 0;
   pickups.frame_count = 4;
@@ -61,6 +62,8 @@ pickups.init_map_data = function() {
   pickups.map_data[1] = {type: pickups.BATTERY, room_x:3, room_y: 0, tile_x: 6, tile_y: 6};
   pickups.map_data[2] = {type: pickups.DOUBLE_JUMP, room_x:2, room_y: 1, tile_x: 2, tile_y: 2};
   pickups.map_data[3] = {type: pickups.BATTERY, room_x:0, room_y: 1, tile_x: 3, tile_y: 6};
+  pickups.map_data[4] = {type: pickups.BATTERY, room_x:7, room_y: 2, tile_x: 6, tile_y: 3};
+  pickups.map_data[5] = {type: pickups.BOOSTER, room_x:5, room_y: 0, tile_x: 2, tile_y: 5};
   
 }
 
