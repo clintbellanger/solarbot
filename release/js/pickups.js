@@ -23,8 +23,8 @@ pickups.init = function() {
   pickups.info[pickups.DOUBLE_JUMP] = new Object();
   pickups.info[pickups.DOUBLE_JUMP].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
 
-  pickups.info[pickups.BOOSTER] = new Object();
-  pickups.info[pickups.BOOSTER].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
+  //pickups.info[pickups.BOOSTER] = new Object();
+  //pickups.info[pickups.BOOSTER].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
   
   // shared animation properties
   pickups.current_frame = 0;
