@@ -63,7 +63,7 @@ pickups.init_map_data = function() {
   pickups.map_data[2] = {type: pickups.DOUBLE_JUMP, room_x:2, room_y: 1, tile_x: 2, tile_y: 2};
   pickups.map_data[3] = {type: pickups.BATTERY, room_x:0, room_y: 1, tile_x: 3, tile_y: 6};
   pickups.map_data[4] = {type: pickups.BATTERY, room_x:7, room_y: 2, tile_x: 6, tile_y: 3};
-  pickups.map_data[5] = {type: pickups.BOOSTER, room_x:5, room_y: 0, tile_x: 2, tile_y: 5};
+  // pickups.map_data[5] = {type: pickups.BOOSTER, room_x:5, room_y: 0, tile_x: 2, tile_y: 5};
   
 }
 
