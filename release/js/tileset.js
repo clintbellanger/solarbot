@@ -2,7 +2,7 @@
  Tilesets.
  goal: tile indexes represent similar shapes across sets
        so that swapping a tileset keeps a map intact.
-	   
+       
   Dependencies:
   imageset.js
 */
@@ -17,13 +17,14 @@ tileset.init = function() {
   tileset.info = new Array();
   for (var i=0; i<=32; i++) {
     tileset.info[i] = new Object();
-	tileset.info[i].collide = false;
-	
-	// support spikes and similar dangerous terrain
-	tileset.info[i].hazardous_top = false;
-	tileset.info[i].hazardous_bottom = false;
-	
-	tileset.info[i].src = {x:0, y:0};
+    tileset.info[i].collide = false;
+    
+    // support spikes and similar dangerous terrain
+    tileset.info[i].hazardous_top = false;
+    tileset.info[i].hazardous_bottom = false;
+    tileset.info[i].breakable = false;
+    
+    tileset.info[i].src = {x:0, y:0};
   }
   
   tileset.info[1].collide = true;
@@ -35,6 +36,7 @@ tileset.init = function() {
   tileset.info[8].hazardous_bottom = true;
   tileset.info[9].collide = true;
   tileset.info[10].collide = true;
+  tileset.info[10].breakable = true;
   tileset.info[11].collide = true;
   tileset.info[13].collide = true;
   tileset.info[14].collide = true;
@@ -87,11 +89,11 @@ tileset.draw_tile = function(tile_index, grid_x, grid_y) {
   
   imageset.render(
     tileset.img,
-	tileset.info[tile_index].src.x,
-	tileset.info[tile_index].src.y,
-	tileset.tile_size,tileset.tile_size,
-	grid_x * tileset.tile_size,
-	grid_y * tileset.tile_size
+    tileset.info[tile_index].src.x,
+    tileset.info[tile_index].src.y,
+    tileset.tile_size,tileset.tile_size,
+    grid_x * tileset.tile_size,
+    grid_y * tileset.tile_size
   );
 
 }

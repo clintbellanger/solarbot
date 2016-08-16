@@ -125,6 +125,7 @@ rover.logic = function() {
   
   // move by current velocity, affected by collisions.
   rover.movement();
+  rover.check_drill();
   
   // handle leaving screen
   rover.screen_wrap();
@@ -328,6 +329,27 @@ rover.move_down = function() {
   }
 }
 
+rover.check_drill = function() { 
+
+   if (rover.on_ground && rover.speed_x == 0) {
+   
+     if (pressing.left) {
+       if (collision.collideLeft(rover.get_collision_box(), -1)) {
+         powerups.drill_engage();
+         return;
+       }
+     }
+     else if (pressing.right) {
+       if (collision.collideRight(rover.get_collision_box(), 1)) {
+         powerups.drill_engage();
+         return;
+       }     
+     }
+   }
+   
+   powerups.drill_disengage();   
+}
+
 /**
  * If no longer touching ground, start falling
  */
@@ -496,6 +518,11 @@ rover.screen_wrap = function() {
 /**************************** Rendering Functions ****************************/
 
 rover.render = function() {
+  
+  if (powerups.drill.acquired && powerups.drill.power > 0) {
+    powerups.render_drill(rover.x, rover.y, rover.facing);
+  }
+
   // base body parts which are animated and positioned separately
   rover.render_chassis();
   rover.render_wheel(rover.wheel_left);
@@ -506,6 +533,7 @@ rover.render = function() {
   if (powerups.doublejump.used && rover.jump_startup_frames_remaining > 0) {
     powerups.render_doublejump(rover.x, rover.y);
   }
+    
 }
 
 // TODO: replace entirely particles

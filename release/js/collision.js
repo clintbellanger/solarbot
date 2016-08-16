@@ -186,3 +186,15 @@ collision.checkSpikesBelow = function(rect, speed_y) {
   // touched spikes?
   return (spikes_found && !blocked);
 }
+
+collision.checkBreakableLeft = function(rect) {
+  var grid_x = collision.posToGrid(rect.x - 1);
+  var grid_y = collision.posToGrid(rect.y);  
+  return tileset.info[labyrinth.get_tile(grid_x, grid_y)].breakable;  
+}
+
+collision.checkBreakableRight = function(rect) {
+  var grid_x = collision.posToGrid(rect.x + rect.w + 1);
+  var grid_y = collision.posToGrid(rect.y);  
+  return tileset.info[labyrinth.get_tile(grid_x, grid_y)].breakable;  
+}

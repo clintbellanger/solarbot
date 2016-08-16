@@ -25,8 +25,27 @@ powerups.init = function() {
   // Double Jump becomes a sustained booster
   powerups.booster = new Object();
   powerups.booster.acquired = false;
-    
-  
+ 
+  // Drill power
+  powerups.drill = new Object();
+  powerups.drill.img = imageset.load("images/powerup_effect_drill.png");
+  powerups.drill.acquired = true;
+  powerups.drill.power = 0;
+  powerups.drill.power_max = 30;
+  powerups.drill.strike = false;
+  powerups.drill.frames_left = [{x:0, y:8}, {x:8, y:8}, {x:16, y:8}, {x:24, y:8}];
+  powerups.drill.frames_right = [{x:0, y:0}, {x:8, y:0}, {x:16, y:0}, {x:24, y:0}];
+}
+
+powerups.drill_engage = function() {
+  powerups.drill.power++;
+  if (powerups.drill.power >= powerups.drill.power_max) {
+    powerups.drill.strike = true;
+  }
+}
+
+powerups.drill_disengage = function() {
+  powerups.drill.power = 0;
 }
 
 powerups.acquire_jump = function() {
@@ -61,3 +80,25 @@ powerups.render_doublejump = function(x,y) {
 	dest_x, dest_y);
   
 }
+
+powerups.render_drill = function(x, y, facing) {
+  
+  var src_x, src_y;
+  var dest_x, dest_y;
+  var anim_frame = Math.floor((powerups.drill.power/3) % 4);
+  
+  if (facing == FACING_LEFT) {
+    src_x = powerups.drill.frames_left[anim_frame].x;
+    src_y = powerups.drill.frames_left[anim_frame].y;
+    dest_x = x+1 - Math.min(powerups.drill.power/8, 8);
+  }
+  else if (facing == FACING_RIGHT) {
+    src_x = powerups.drill.frames_right[anim_frame].x;
+    src_y = powerups.drill.frames_right[anim_frame].y;    
+    dest_x = x+6 + Math.min(powerups.drill.power/8, 8);
+  }
+  dest_y = y + 4;
+  
+  imageset.render(powerups.drill.img, src_x, src_y, 8, 8, dest_x, dest_y);
+}
+
