@@ -198,3 +198,63 @@ collision.checkBreakableRight = function(rect) {
   var grid_y = collision.posToGrid(rect.y);  
   return tileset.info[labyrinth.get_tile(grid_x, grid_y)].breakable;  
 }
+
+collision.getTileRect = function(grid_x, grid_y) {
+  return {x: grid_x * tileset.tile_size, y: grid_y * tileset.tile_size, w: tileset.tile_size, h: tileset.tile_size};
+}
+
+collision.explodeBrick = function(grid_x, grid_y) {
+
+  labyrinth.set_tile(grid_x, grid_y, 0);
+  imageset.shaking = 6;	  
+
+  var tile_rect = collision.getTileRect(grid_x, grid_y);
+  particles.preset_sparks_area(tile_rect, 40);
+  particles.preset_smoke_area(tile_rect, 10);
+  
+}
+
+collision.drillBrickLeft = function(rect, power) {
+
+  if (collision.checkBreakableLeft(rect)) {    
+
+    // emit sparks
+	particles.preset_sparks_drill_left(rect.x, rect.y + 4);
+	imageset.vibrating = 2;
+	
+	// if above certain power level, break brick
+	if (power > 50) {
+      var grid_x = collision.posToGrid(rect.x - 1);
+      var grid_y = collision.posToGrid(rect.y);
+	  collision.explodeBrick(grid_x, grid_y);	  
+	}	
+  }
+  else {
+    if (Math.random() < 0.04) {
+      particles.preset_smoke_drill_left(rect.x, rect.y + 4);
+	}
+  }  
+}
+
+collision.drillBrickRight = function(rect, power) {
+
+  if (collision.checkBreakableRight(rect)) {    
+
+    // emit sparks
+	particles.preset_sparks_drill_right(rect.x + rect.w-1, rect.y + 4);
+	imageset.vibrating = 2;
+	
+	// if above certain power level, break brick
+	if (power > 50) {
+      var grid_x = collision.posToGrid(rect.x + rect.w + 1);
+      var grid_y = collision.posToGrid(rect.y);
+	  collision.explodeBrick(grid_x, grid_y);	  
+	}	
+  }
+  else {
+    if (Math.random() < 0.04) {
+      particles.preset_smoke_drill_right(rect.x + rect.w-1, rect.y + 4);
+	}
+  }  
+}
+

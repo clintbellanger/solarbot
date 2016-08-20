@@ -329,24 +329,37 @@ rover.move_down = function() {
   }
 }
 
-rover.check_drill = function() { 
+/**
+ The drill (if acquired) is engaged when the rover is on the ground and
+ driving against a wall.
+ Engages the drill whether the wall block can be broken or not.
+ */
+rover.check_drill = function() {
+  if (!powerups.drill.acquired) return;
+
+   // checking speed==0 is because the rover's horizontal speed
+   // is reset to 0 if blocked by a wall. calculated in rover.movement().
+   // WARN: expects rover.movement() has already been called this frame
 
    if (rover.on_ground && rover.speed_x == 0) {
    
      if (pressing.left) {
-       if (collision.collideLeft(rover.get_collision_box(), -1)) {
+       if (collision.collideLeft(rover.get_collision_box(), -1)) {	   
          powerups.drill_engage();
+		 collision.drillBrickLeft(rover.get_collision_box(), powerups.drill.power);
          return;
        }
      }
      else if (pressing.right) {
        if (collision.collideRight(rover.get_collision_box(), 1)) {
          powerups.drill_engage();
+		 collision.drillBrickRight(rover.get_collision_box(), powerups.drill.power);
          return;
        }     
      }
    }
    
+   // disengaging the drill retracts it
    powerups.drill_disengage();   
 }
 

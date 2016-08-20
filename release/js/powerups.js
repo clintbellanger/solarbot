@@ -29,7 +29,7 @@ powerups.init = function() {
   // Drill power
   powerups.drill = new Object();
   powerups.drill.img = imageset.load("images/powerup_effect_drill.png");
-  powerups.drill.acquired = true;
+  powerups.drill.acquired = false;
   powerups.drill.power = 0;
   powerups.drill.power_max = 32;
   powerups.drill.strike = false;
@@ -60,7 +60,11 @@ powerups.acquire_doublejump = function() {
 
 powerups.acquire_booster = function() {
    powerups.booster.acquired = true;
-   powerups.doublejump.max_frames = 1000;   
+   powerups.doublejump.max_frames = 1000;
+}
+
+powerups.acquire_drill = function() {
+  powerups.drill.acquired = true;
 }
 
 powerups.render_doublejump = function(x,y) {
@@ -92,11 +96,13 @@ powerups.render_drill = function(x, y, facing) {
   if (facing == FACING_LEFT) {
     src_x = powerups.drill.frames_left[anim_frame].x;
     src_y = powerups.drill.frames_left[anim_frame].y;
+	// slide the drill left 8 pixels (width of drill)
     dest_x = x+1 - Math.min(powerups.drill.power/4, 8);
   }
   else if (facing == FACING_RIGHT) {
     src_x = powerups.drill.frames_right[anim_frame].x;
     src_y = powerups.drill.frames_right[anim_frame].y;    
+	// slide the drill right 8 pixels (width of drill)
     dest_x = x+6 + Math.min(powerups.drill.power/4, 8);
   }
   dest_y = y + 5;

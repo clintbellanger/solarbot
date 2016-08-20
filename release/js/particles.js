@@ -243,3 +243,27 @@ particles.preset_smoke_thrust = function(x, y, rover_dx, rover_dy) {
     
   particles.add(particles.SMOKE,x,y,dx,dy);
 }
+
+particles.preset_sparks_drill_left = function(x, y) {
+  var dx = random_between(1.0, 4.0);
+  var dy = random_between(-2, 0);
+  particles.add(particles.SPARK,x,y,dx,dy);
+}
+
+particles.preset_sparks_drill_right = function(x, y) {
+  var dx = random_between(-4.0, -1.0);
+  var dy = random_between(-2, 0);
+  particles.add(particles.SPARK,x,y,dx,dy);
+}
+
+particles.preset_smoke_drill_left = function(x, y) {
+  var dx = random_between(0, 0.5);
+  var dy = random_between(-0.5, 0);
+  particles.add(particles.SMOKE,x,y,dx,dy);
+}
+
+particles.preset_smoke_drill_right = function(x, y) {
+  var dx = random_between(-0.5, 0);
+  var dy = random_between(-0.5, 0);
+  particles.add(particles.SMOKE,x,y,dx,dy);
+}
