@@ -110,7 +110,7 @@ labyrinth.load_room = function(room_x, room_y) {
    }
    
    pickups.load_room(room_x, room_y);
-   message.clear_message();
+   messages.clear_message();
 }
 
 labyrinth.draw_room = function() {

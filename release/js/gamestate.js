@@ -51,7 +51,7 @@ function gamestate_render() {
 	  particles.render();
       battery.render();
       minimap.render();
-      message.render_message();
+      messages.render_message();
       break;
       
     case STATE_DEAD:

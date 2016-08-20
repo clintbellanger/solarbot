@@ -125,7 +125,7 @@ pickups.check_pickup = function(rover_cbox) {
 	  minimap.unlocked = true;
 	}
 	
-	message.set_message(pickups.info[pickups.on_screen.type].name);
+	messages.set_message(pickups.info[pickups.on_screen.type].name);
 	
     // visual effects
     particles.preset_smoke_area(item_cbox, 5);

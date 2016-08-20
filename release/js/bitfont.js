@@ -11,7 +11,7 @@ Note this class is simplified in several ways:
  */
 
 
-var bitfont = new Object();
+var bitfont = {};
 
 bitfont.init = function() {
 
@@ -19,8 +19,8 @@ bitfont.init = function() {
   bitfont.JUSTIFY_RIGHT = 1;
   bitfont.JUSTIFY_CENTER = 2;
 
-  bitfont.glyph_x = new Array();
-  bitfont.glyph_w = new Array();
+  bitfont.glyph_x = [];
+  bitfont.glyph_w = [];
   bitfont.cursor_x = 0;
 
   // configuration for this font

@@ -6,15 +6,7 @@ var FPS = 60;
 // this style of game doesn't update visually often
 // set this flag anytime the render function should update the view
 var redraw = false;
-var init_complete = false;
 
-//---- Main Loop --------------------------------------------------
-
-setInterval(function() {
-  if (!init_complete) return;
-  logic();
-  render();
-}, 1000/FPS);
 
 //---- Logic Function ---------------------------------------------
 
@@ -57,21 +49,24 @@ function init() {
   }
   
   // load some user preferences
-  var json_save = getCookie("options");
-  if (json_save != null) {
-    OPTIONS = JSON.parse(json_save);
-  }
+  //var json_save = getCookie("options");
+  //if (json_save != null) {
+  //  OPTIONS = JSON.parse(json_save);
+  //}
 
   init_all();
   
-  init_complete = true;
+  setInterval(function() {
+    logic();
+    render();
+  }, 1000/FPS);
 }
 
 // initialize all game units
 function init_all() {  
   imageset.init();
   bitfont.init();
-  message.init();
+  messages.init();
   tileset.init();
   pickups.init();
   labyrinth.init();
@@ -87,7 +82,7 @@ function reset_game() {
   // imageset.init() skipped, we don't want to reload images
   // some other objects are essentially static
    
-  message.init();
+  messages.init();
   particles.init();
   pickups.init();
   labyrinth.init();
