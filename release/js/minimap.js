@@ -7,6 +7,7 @@ var minimap = new Object();
 
 minimap.init = function() {
 
+  minimap.unlocked = false;
   minimap.hud_img = imageset.load("images/minimap_tiles.png");
   
   minimap.screen_pos = {x:98, y:4};
@@ -53,6 +54,8 @@ minimap.init = function() {
 }
 
 minimap.render = function() {
+  if (!minimap.unlocked) return;
+  
   minimap.render_background();
   minimap.render_grid();
   minimap.render_youarehere();

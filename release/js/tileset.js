@@ -48,8 +48,10 @@ tileset.init = function() {
   tileset.info[20].breakable = true;  
   tileset.info[21].collide = true;  
   tileset.info[21].hazardous_top = true;
+  tileset.info[21].breakable = true;
   tileset.info[22].collide = true;
   tileset.info[22].hazardous_bottom = true;
+  tileset.info[22].breakable = true;
   
   // tile atlas positions
   // using bleed and gutters to help with scaling artifacts

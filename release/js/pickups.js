@@ -11,6 +11,7 @@ pickups.init = function() {
   pickups.DOUBLE_JUMP = 2;
   pickups.BOOSTER = 3;
   pickups.DRILL = 4;
+  pickups.MINIMAP = 5;
   
   pickups.info = new Array();
   
@@ -21,14 +22,17 @@ pickups.init = function() {
   pickups.info[pickups.JUMP].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
   
   pickups.info[pickups.DOUBLE_JUMP] = new Object();
-  pickups.info[pickups.DOUBLE_JUMP].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
+  pickups.info[pickups.DOUBLE_JUMP].frames = [{x:0, y:64}, {x:16, y:64}, {x:32, y:64}, {x:48, y:64}];
 
   pickups.info[pickups.BOOSTER] = new Object();
-  pickups.info[pickups.BOOSTER].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
+  pickups.info[pickups.BOOSTER].frames = [{x:0, y:80}, {x:16, y:80}, {x:32, y:80}, {x:48, y:80}];
   
   pickups.info[pickups.DRILL] = new Object();
-  pickups.info[pickups.DRILL].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
+  pickups.info[pickups.DRILL].frames = [{x:0, y:48}, {x:16, y:48}, {x:32, y:48}, {x:48, y:48}];
   
+  pickups.info[pickups.MINIMAP] = new Object();
+  pickups.info[pickups.MINIMAP].frames = [{x:0, y:32}, {x:16, y:32}, {x:32, y:32}, {x:48, y:32}];
+
   
   // shared animation properties
   pickups.current_frame = 0;
@@ -69,6 +73,7 @@ pickups.init_map_data = function() {
   pickups.map_data[4] = {type: pickups.BATTERY, room_x:7, room_y: 2, tile_x: 6, tile_y: 3};
   pickups.map_data[5] = {type: pickups.DRILL, room_x:5, room_y: 0, tile_x: 2, tile_y: 5};
   pickups.map_data[6] = {type: pickups.BOOSTER, room_x:5, room_y: 2, tile_x: 1, tile_y: 4};
+  pickups.map_data[7] = {type: pickups.MINIMAP, room_x:1, room_y: 0, tile_x: 4, tile_y: 6};
   
 }
 
@@ -110,7 +115,10 @@ pickups.check_pickup = function(rover_cbox) {
     }
     else if (pickups.on_screen.type == pickups.DRILL) {
       powerups.acquire_drill(); 
-    }        
+    }
+	else if (pickups.on_screen.type == pickups.MINIMAP) {
+	  minimap.unlocked = true;
+	}
     // visual effects
     particles.preset_smoke_area(item_cbox, 5);
     
