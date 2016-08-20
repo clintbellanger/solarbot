@@ -17,22 +17,27 @@ pickups.init = function() {
   
   pickups.info[pickups.BATTERY] = new Object();
   pickups.info[pickups.BATTERY].frames = [{x:0, y:0}, {x:16, y:0}, {x:32, y:0}, {x:48, y:0}];
+  pickups.info[pickups.BATTERY].name = "Battery Pack";
   
   pickups.info[pickups.JUMP] = new Object();
   pickups.info[pickups.JUMP].frames = [{x:0, y:16}, {x:16, y:16}, {x:32, y:16}, {x:48, y:16}];
+  pickups.info[pickups.JUMP].name = "Jump Coil";
   
   pickups.info[pickups.DOUBLE_JUMP] = new Object();
   pickups.info[pickups.DOUBLE_JUMP].frames = [{x:0, y:64}, {x:16, y:64}, {x:32, y:64}, {x:48, y:64}];
-
+  pickups.info[pickups.DOUBLE_JUMP].name = "Double Jump";
+  
   pickups.info[pickups.BOOSTER] = new Object();
   pickups.info[pickups.BOOSTER].frames = [{x:0, y:80}, {x:16, y:80}, {x:32, y:80}, {x:48, y:80}];
+  pickups.info[pickups.BOOSTER].name = "Rocket Booster";
   
   pickups.info[pickups.DRILL] = new Object();
   pickups.info[pickups.DRILL].frames = [{x:0, y:48}, {x:16, y:48}, {x:32, y:48}, {x:48, y:48}];
+  pickups.info[pickups.DRILL].name = "Wall Drill";
   
   pickups.info[pickups.MINIMAP] = new Object();
   pickups.info[pickups.MINIMAP].frames = [{x:0, y:32}, {x:16, y:32}, {x:32, y:32}, {x:48, y:32}];
-
+  pickups.info[pickups.MINIMAP].name = "Map Scanner";
   
   // shared animation properties
   pickups.current_frame = 0;
@@ -102,7 +107,7 @@ pickups.check_pickup = function(rover_cbox) {
     
     // set new abilities in powerups object
     if (pickups.on_screen.type == pickups.BATTERY) {
-      battery.add_capacity(2);
+      battery.add_capacity(2);	  
     }
     else if (pickups.on_screen.type == pickups.JUMP) {
       powerups.acquire_jump(); 
@@ -119,6 +124,9 @@ pickups.check_pickup = function(rover_cbox) {
 	else if (pickups.on_screen.type == pickups.MINIMAP) {
 	  minimap.unlocked = true;
 	}
+	
+	message.set_message(pickups.info[pickups.on_screen.type].name);
+	
     // visual effects
     particles.preset_smoke_area(item_cbox, 5);
     

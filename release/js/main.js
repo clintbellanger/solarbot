@@ -70,6 +70,8 @@ function init() {
 // initialize all game units
 function init_all() {  
   imageset.init();
+  bitfont.init();
+  message.init();
   tileset.init();
   pickups.init();
   labyrinth.init();
@@ -77,14 +79,15 @@ function init_all() {
   rover.init();
   particles.init();  
   battery.init();
-  minimap.init();  
+  minimap.init();
 }
 
 // initialize all game units changed during gameplay
 function reset_game() {
   // imageset.init() skipped, we don't want to reload images
   // some other objects are essentially static
-    
+   
+  message.init();
   particles.init();
   pickups.init();
   labyrinth.init();
