@@ -88,6 +88,12 @@ collision.collideRight = function(rect, speed_x) {
   return false;
 }
 
+collision.collideX = function(rect, speed_x) {
+  if (speed.x < 0) return collision.collideLeft(rect, speed_x);
+  else if (speed.x > 0) return collision.collideRight(rect, speed_y);
+  else return false;
+}
+
 collision.collideUp = function(rect, speed_y) {
   var grid_y = collision.posToGrid(rect.y + speed_y);
   var grid_left = collision.posToGrid(rect.x);

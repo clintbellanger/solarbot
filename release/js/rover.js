@@ -56,7 +56,7 @@ rover.init = function() {
   // rover current state   
   // horizontal
   rover.x = 56;
-  rover.y = 64;
+  rover.y = -5;
   rover.speed_x = 0.0;
   rover.speed_y = 0.0;
   // vertical
@@ -89,7 +89,7 @@ rover.init = function() {
   
   // head current state
   rover.head_frame = 0;
-  rover.facing = FACING_LEFT;
+  rover.facing = FACING_RIGHT;
 
   // after taking damage, invulnerable for a moment
   rover.invulnerable_frames = 0;
