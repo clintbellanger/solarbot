@@ -19,6 +19,7 @@ function gamestate_logic() {
   switch(gamestate) {
     case STATE_EXPLORE:
       rover.logic();
+      bots.logic();
       imageset.logic();
       battery.logic();
 	    pickups.logic();
@@ -30,6 +31,7 @@ function gamestate_logic() {
       
     case STATE_DEAD:    
       rover.dead_logic();
+      bots.logic();
       imageset.logic();
       battery.logic();
       particles.logic();
@@ -47,8 +49,9 @@ function gamestate_render() {
     case STATE_EXPLORE:
       labyrinth.draw_room();      
       rover.render();
+      bots.render();
       pickups.render();
-	  particles.render();
+      particles.render();
       battery.render();
       minimap.render();
       messages.render_message();
@@ -56,7 +59,8 @@ function gamestate_render() {
       
     case STATE_DEAD:
       labyrinth.draw_room();
-      rover.dead_render();      
+      rover.dead_render();
+      bots.render();
       particles.render();
       battery.render();
       minimap.render();

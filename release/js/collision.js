@@ -89,8 +89,8 @@ collision.collideRight = function(rect, speed_x) {
 }
 
 collision.collideX = function(rect, speed_x) {
-  if (speed.x < 0) return collision.collideLeft(rect, speed_x);
-  else if (speed.x > 0) return collision.collideRight(rect, speed_y);
+  if (speed_x < 0) return collision.collideLeft(rect, speed_x);
+  else if (speed_x > 0) return collision.collideRight(rect, speed_x);
   else return false;
 }
 
