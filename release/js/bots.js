@@ -26,16 +26,7 @@ bots.init = function() {
   bots.directions.DOWN = 4;
   
   bots.metadata = []; // index is bots.types
-  // values that are static metadata, e.g. frame info. varying by bot type
-  
-  
-  bots.metadata[bots.types.TANK] = {};
-  var tank = bots.metadata[bots.types.TANK];
-  tank.frames_left = [{x:2, y:2},{x:22, y:2},{x:42, y:2}];
-  tank.frames_right = [{x:62, y:2},{x:82, y:2},{x:102, y:2}];
-  tank.collision_margin = {top:2, bottom:0, left:0, right:0};
-  tank.max_speed = 1;
-  
+  // values that are static metadata, e.g. frame info. varying by bot type    
   
   bots.state = []; // index is bot_id
   // values are internal animation and logic info, varying by bot type
@@ -49,8 +40,69 @@ bots.init = function() {
   bots.collision = []; // index is bot_id
   // values are rectangle {x, y, w, h}
   // calculated each frame by the bot type's logic()
+ 
+  bots.load_metadata();
+  bots.spawns = [];
+  bots.init_spawns();
+}
 
-  bots.add(bots.types.TANK, 7, 4, bots.directions.LEFT);
+bots.load_metadata = function() {
+
+  // TANK
+  bots.metadata[bots.types.TANK] = {};
+  var tank = bots.metadata[bots.types.TANK];
+  tank.frames = [];
+  tank.frames[bots.directions.LEFT] = [{x:2, y:2},{x:22, y:2},{x:42, y:2}];
+  tank.frames[bots.directions.RIGHT] = [{x:62, y:2},{x:82, y:2},{x:102, y:2}];
+  tank.collision_margin = {top:2, bottom:1, left:1, right:1};  
+  tank.base_anim = [];
+  tank.base_anim[bots.directions.LEFT] = Animation(0, 0.3, 3, true);
+  tank.base_anim[bots.directions.RIGHT] = Animation(0, 0.3, 3, true);
+  tank.max_speed = [];
+  tank.max_speed[bots.directions.LEFT] = -0.5;
+  tank.max_speed[bots.directions.RIGHT] = 0.5;
+  tank.on_ground = true;
+
+  // UFO
+  bots.metadata[bots.types.UFO] = {};
+  var ufo = bots.metadata[bots.types.UFO];
+  ufo.frames = [];
+  ufo.frames[bots.directions.LEFT] = [{x:2, y:62},{x:22, y:62},{x:42, y:62},{x:62, y:62},{x:82, y:62}];
+  ufo.frames[bots.directions.RIGHT] = [{x:102, y:62},{x:122, y:62},{x:142, y:62},{x:162, y:62},{x:182, y:62}];
+  ufo.collision_margin = {top:1, bottom:3, left:1, right:1};  
+  ufo.base_anim = [];
+  ufo.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true);
+  ufo.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true);
+  ufo.max_speed = [];
+  ufo.max_speed[bots.directions.LEFT] = -1;
+  ufo.max_speed[bots.directions.RIGHT] = 1;
+  ufo.on_ground = false;
+  
+  // DRONE
+  bots.metadata[bots.types.DRONE] = {};
+  var drone = bots.metadata[bots.types.DRONE];
+  drone.frames = [];
+  drone.frames[bots.directions.LEFT] = [{x:2, y:42},{x:22, y:42},{x:42, y:42},{x:62, y:42},{x:82, y:42}];
+  drone.frames[bots.directions.RIGHT] = [{x:102, y:42},{x:122, y:42},{x:142, y:42},{x:162, y:42},{x:182, y:42}];
+  drone.collision_margin = {top:1, bottom:3, left:1, right:1};  
+  drone.base_anim = [];
+  drone.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true);
+  drone.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true);
+  drone.max_speed = [];
+  drone.max_speed[bots.directions.LEFT] = -0.5;
+  drone.max_speed[bots.directions.RIGHT] = 0.5;
+  drone.on_ground = false;  
+  
+}
+
+bots.init_spawns = function() {
+
+  bots.spawns[0] = {type:bots.types.TANK, room_x:1, room_y:0, tile_x:3, tile_y:6, facing:bots.directions.RIGHT};
+  bots.spawns[1] = {type:bots.types.TANK, room_x:3, room_y:0, tile_x:5, tile_y:4, facing:bots.directions.LEFT};
+  bots.spawns[2] = {type:bots.types.UFO, room_x:3, room_y:0, tile_x:5, tile_y:3, facing:bots.directions.RIGHT};
+  bots.spawns[3] = {type:bots.types.DRONE, room_x:2, room_y:0, tile_x:3, tile_y:5, facing:bots.directions.LEFT};
+  bots.spawns[4] = {type:bots.types.DRONE, room_x:3, room_y:1, tile_x:3, tile_y:5, facing:bots.directions.RIGHT};
+  bots.spawns[5] = {type:bots.types.UFO, room_x:1, room_y:1, tile_x:3, tile_y:4, facing:bots.directions.RIGHT};
   
 }
 
@@ -58,20 +110,45 @@ bots.add = function(bot_type, grid_x, grid_y, facing) {
   
   var bot_id = bots.count;
   bots.count++;
-
+  
   bots.state[bot_id] = {};
-  bots.state[bot_id].type = bot_type;
-  bots.state[bot_id].facing = bots.directions.LEFT;
-  bots.state[bot_id].x = grid_x * tileset.tile_size;
-  bots.state[bot_id].y = grid_y * tileset.tile_size;
-  bots.state[bot_id].speed = -bots.metadata[bot_type].max_speed;
+  var newbot = bots.state[bot_id];
+  var meta = bots.metadata[bot_type];
   
-  bots.state[bot_id].anim = Animation(0, 0.3, 3, true);
-  bots.sprite[bot_id] = {};
+  newbot.type = bot_type;
+  newbot.facing = facing;
+  newbot.x = grid_x * tileset.tile_size;
+  newbot.y = grid_y * tileset.tile_size;
+  if (meta.on_ground) newbot.y += meta.collision_margin.bottom; // if a ground bot, shift down for collision box to rest on floor
   
-  bots.set_collision(bot_id);
-  
+  newbot.anim = animate.copy_anim(meta.base_anim[facing]);
+  newbot.speed = meta.max_speed[facing];  
+    
+  bots.sprite[bot_id] = {};  
+  bots.set_collision(bot_id);  
 
+}
+
+bots.load_room = function(room_x, room_y) {
+
+  bots.clear_room();
+  var spawn;
+  
+  for (var i=0; i<bots.spawns.length; i++) {    
+	spawn = bots.spawns[i];
+	
+    // is this bot in this room?
+    if (room_x == spawn.room_x && room_y == spawn.room_y) {
+      bots.add(spawn.type, spawn.tile_x, spawn.tile_y, spawn.facing);
+    }
+  }
+}
+
+bots.clear_room = function() {
+  bots.state = [];
+  bots.collision = [];
+  bots.sprite = [];
+  bots.count = 0;
 }
 
 
@@ -87,8 +164,6 @@ bots.add = function(bot_type, grid_x, grid_y, facing) {
  * Each bot type has a custom logic function that
  * sets the bot's render info. Each individual bot also
  * has a separate object of internal state variables.
-  
- 
  */
 bots.logic = function() {
   for (var i=0; i<bots.count; i++) {
@@ -98,7 +173,19 @@ bots.logic = function() {
       case bots.types.TANK:
         bots.logic_tank(i);
         break;
+		
+      case bots.types.UFO:
+	    bots.logic_ufo(i);
+		break;
+		
+	  case bots.types.DRONE:
+	    bots.logic_drone(i);
+		break;
     }
+	
+	bots.set_collision(i);
+	bots.set_sprite(i);
+	
   }
   
 }
@@ -120,56 +207,88 @@ bots.render_single = function(bot_id) {
   );
 }
 
-/**** AI scripts for each bot type ****/
-
 bots.set_collision = function(bot_id) {
   var onebot = bots.state[bot_id];
   var margins = bots.metadata[onebot.type].collision_margin;
   bots.collision[bot_id] =
     {x:onebot.x + margins.left,
      y:onebot.y + margins.top,
-	 w:bots.frame_size - margins.right - margins.left,
-	 h:bots.frame_size - margins.top - margins.bottom};  
+	 w:bots.frame_size - (margins.right + margins.left),
+	 h:bots.frame_size - (margins.top + margins.bottom)};
 }
 
-// bots.types.TANK
+bots.set_sprite = function(bot_id) {
+  var onebot = bots.state[bot_id];
+  var sprite = bots.sprite[bot_id];
+  var meta = bots.metadata[onebot.type];
+    
+  // animation calculations
+  sprite.dest_x = Math.round(onebot.x);
+  sprite.dest_y = Math.round(onebot.y);
+  
+  animate.advance(onebot.anim);
+  var display_frame = Math.floor(onebot.anim.frame);  
+  sprite.src_x = meta.frames[onebot.facing][display_frame].x;
+  sprite.src_y = meta.frames[onebot.facing][display_frame].y;
+
+}
+
+
+/**** bot AI by type ****/
+
+// tanks patrol left/right on the current platform
 bots.logic_tank = function(bot_id) {
+  
   var tank = bots.state[bot_id];
   var cbox = bots.collision[bot_id];
   
   // movement and position calculations
-  // checking wall
-  if (!collision.collideX(cbox, tank.speed)) {
-    tank.x += tank.speed;
-    bots.set_collision(bot_id);  
-  }
-  else {
-    tank.speed *= -1; // flip direction
-  }
-  
+  var wall_ahead = collision.collideX(cbox, tank.speed);
+  var hole_below = collision.holeCheck(cbox);
+  var edge_ahead = collision.screenEdgeX(cbox, tank.speed);  
 
-  // TODO:
-  // turn_around can happen for several other reasons:
-  // [x] touched a wall
-  // [ ] end of platform
-  // [ ] end of screen
-
-  
-  // animation calculations
-  bots.sprite[bot_id].dest_x = Math.round(tank.x);
-  bots.sprite[bot_id].dest_y = Math.round(tank.y);
-  
-  animate.advance(tank.anim);
-  var display_frame = Math.floor(tank.anim.frame);
-  
-  if (tank.speed < 0) {
-    tank.facing = bots.directions.LEFT;
-    bots.sprite[bot_id].src_x = bots.metadata[bots.types.TANK].frames_left[display_frame].x;
-    bots.sprite[bot_id].src_y = bots.metadata[bots.types.TANK].frames_left[display_frame].y;
+  if (wall_ahead || hole_below || edge_ahead) {
+    tank.speed *= -1; // turn around
+	if (tank.speed < 0) tank.facing = bots.directions.LEFT;
+	else tank.facing = bots.directions.RIGHT;
   }
-  else {
-    tank.facing = bots.directions.RIGHT;
-    bots.sprite[bot_id].src_x = bots.metadata[bots.types.TANK].frames_right[display_frame].x;
-    bots.sprite[bot_id].src_y = bots.metadata[bots.types.TANK].frames_right[display_frame].y;
-  } 
+  
+  tank.x += tank.speed;
+}
+
+// ufos patrol left/right in mid air
+bots.logic_ufo = function(bot_id) {
+
+  var ufo = bots.state[bot_id];
+  var cbox = bots.collision[bot_id];
+  
+  // movement and position calculations
+  var wall_ahead = collision.collideX(cbox, ufo.speed);
+  var edge_ahead = collision.screenEdgeX(cbox, ufo.speed);  
+
+  if (wall_ahead || edge_ahead) {
+    ufo.speed *= -1; // turn around
+	if (ufo.speed < 0) ufo.facing = bots.directions.LEFT;
+	else ufo.facing = bots.directions.RIGHT;
+  }
+  
+  ufo.x += ufo.speed;
+   
+}
+
+// drones patrol up/down in mid air
+bots.logic_drone = function(bot_id) {
+
+  var drone = bots.state[bot_id];
+  var cbox = bots.collision[bot_id];
+  
+  // movement and position calculations
+  var wall_ahead = collision.collideY(cbox, drone.speed);
+  var edge_ahead = collision.screenEdgeY(cbox, drone.speed);  
+
+  if (wall_ahead || edge_ahead) {
+    drone.speed *= -1; // turn around
+  }
+  
+  drone.y += drone.speed;
 }

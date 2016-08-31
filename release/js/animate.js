@@ -22,3 +22,7 @@ animate.advance = function(anim) {
   anim.frame = new_frame;
     
 }
+
+animate.copy_anim = function(anim) {
+  return {frame:anim.frame, speed:anim.speed, max:anim.max, looping:anim.looping};
+}

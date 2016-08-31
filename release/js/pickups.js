@@ -71,7 +71,8 @@ pickups.init = function() {
 pickups.init_map_data = function() {
   
   // where on the map each pickup is
-  /*
+
+  // example.tmx pickups
   pickups.map_data[0] = {type: pickups.JUMP, room_x:0, room_y: 0, tile_x: 1, tile_y: 6};
   pickups.map_data[1] = {type: pickups.BATTERY, room_x:3, room_y: 0, tile_x: 6, tile_y: 6};
   pickups.map_data[2] = {type: pickups.DOUBLE_JUMP, room_x:2, room_y: 1, tile_x: 2, tile_y: 2};
@@ -80,8 +81,8 @@ pickups.init_map_data = function() {
   pickups.map_data[5] = {type: pickups.DRILL, room_x:5, room_y: 0, tile_x: 2, tile_y: 5};
   pickups.map_data[6] = {type: pickups.BOOSTER, room_x:5, room_y: 2, tile_x: 1, tile_y: 4};
   pickups.map_data[7] = {type: pickups.MINIMAP, room_x:1, room_y: 0, tile_x: 4, tile_y: 6};
-  */
-  pickups.map_data[0] = {type: pickups.JUMP, room_x:4, room_y: 0, tile_x: 2, tile_y: 6};
+
+  
   
 }
 

@@ -56,7 +56,7 @@ rover.init = function() {
   // rover current state   
   // horizontal
   rover.x = 56;
-  rover.y = -5;
+  rover.y = 20;
   rover.speed_x = 0.0;
   rover.speed_y = 0.0;
   // vertical
@@ -131,8 +131,8 @@ rover.logic = function() {
   rover.screen_wrap();
 
   // check hazards
-  // spikes
   rover.check_spikes();
+  rover.check_bots();
   
   // handle animations
   rover.accelerate_wheel(rover.wheel_left);
@@ -380,23 +380,31 @@ rover.check_spikes = function() {
   cbox = rover.get_collision_box();
   
   // check floor spikes
-  if (rover.on_ground) {
-  
+  if (rover.on_ground) {  
     if (collision.checkSpikesBelow(cbox, 1)) {
       rover.take_damage(2);
-    }  
-    
+    }      
   }
   // check ceiling spikes
   else {
-
     if (collision.checkSpikesAbove(cbox, rover.speed_y)) {
       rover.take_damage(2);
-    }    
-    
+    }        
   }
 }
- 
+
+rover.check_bots = function() {
+
+  // recently took damage, skip damage check
+  if (rover.invulnerable_frames > 0) return;
+  
+  cbox = rover.get_collision_box();
+  
+  if (collision.rover_vs_bots(cbox)) {
+    rover.take_damage(1);  
+  }
+}
+
 rover.take_damage = function(dmg) {
   imageset.shaking = 10;
   imageset.freeze_frames = 5;

@@ -69,10 +69,10 @@ function init_all() {
   messages.init();
   tileset.init();
   pickups.init();
+  bots.init();
   labyrinth.init();
   powerups.init();
-  rover.init();
-  bots.init();
+  rover.init();  
   particles.init();  
   battery.init();
   minimap.init();
@@ -86,10 +86,10 @@ function reset_game() {
   messages.init();
   particles.init();
   pickups.init();
+  bots.init();
   labyrinth.init();
   powerups.init();
-  rover.init();
-  bots.init();
+  rover.init();  
   battery.init();
   minimap.init();  
   gamestate = STATE_EXPLORE; // TODO: circular dependency?

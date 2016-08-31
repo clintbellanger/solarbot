@@ -47,9 +47,9 @@ function gamestate_render() {
   switch(gamestate) {
   
     case STATE_EXPLORE:
-      labyrinth.draw_room();      
-      rover.render();
-      bots.render();
+      labyrinth.draw_room();
+	  bots.render();
+      rover.render();      
       pickups.render();
       particles.render();
       battery.render();

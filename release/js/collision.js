@@ -52,7 +52,8 @@ collision.posToGrid = function(position) {
 
 
 /**
- * Are we on the ground right now?
+ * Are we over any ground right now?
+ * checks under both bottom corners. 
  */
 collision.groundCheck = function(rect) {
 
@@ -65,6 +66,23 @@ collision.groundCheck = function(rect) {
   } 
   return false;
 }
+
+/**
+ * Are we over any hole right now?
+ * checks under both bottom corners
+ */
+collision.holeCheck = function(rect) {
+
+  var grid_y = collision.posToGrid(rect.y + rect.h);
+  var grid_left = collision.posToGrid(rect.x);
+  var grid_right = collision.posToGrid(rect.x + rect.w -1);
+  
+  if (!collision.tileHasCollision(grid_left, grid_y) || !collision.tileHasCollision(grid_right, grid_y)) {
+    return true;
+  } 
+  return false;
+}
+
 
 collision.collideLeft = function(rect, speed_x) {
   var grid_x = collision.posToGrid(rect.x + speed_x);
@@ -88,11 +106,6 @@ collision.collideRight = function(rect, speed_x) {
   return false;
 }
 
-collision.collideX = function(rect, speed_x) {
-  if (speed_x < 0) return collision.collideLeft(rect, speed_x);
-  else if (speed_x > 0) return collision.collideRight(rect, speed_x);
-  else return false;
-}
 
 collision.collideUp = function(rect, speed_y) {
   var grid_y = collision.posToGrid(rect.y + speed_y);
@@ -264,3 +277,44 @@ collision.drillBrickRight = function(rect, power) {
   }  
 }
 
+collision.rover_vs_bots = function(rover_cbox) {
+  for (var i=0; i<bots.count; i++) {
+    if (collision.rectsOverlap(rover_cbox, bots.collision[i])) {
+	  return true;
+	}
+  }
+  return false;
+}
+
+
+collision.collideX = function(rect, speed_x) {
+  if (speed_x < 0) return collision.collideLeft(rect, speed_x);
+  else if (speed_x > 0) return collision.collideRight(rect, speed_x);
+  else return false;
+}
+
+collision.collideY = function(rect, speed_y) {
+  if (speed_y < 0) return collision.collideUp(rect, speed_y);
+  else if (speed_y > 0) return collision.collideDown(rect, speed_y);
+  else return false;
+}
+
+collision.screenEdgeX = function(rect, speed_x) {
+  if (speed_x < 0) {
+    if (rect.x + speed_x < 0) return true;
+  }
+  else if (speed_x > 0) {
+    if (rect.x + rect.w + speed_x > VIEW_WIDTH) return true;
+  }
+  return false;
+}
+
+collision.screenEdgeY = function(rect, speed_y) {
+  if (speed_y < 0) {
+    if (rect.y + speed_y < 0) return true;
+  }
+  else if (speed_y > 0) {
+    if (rect.y + rect.h + speed_y > VIEW_HEIGHT) return true;
+  }
+  return false;
+}
