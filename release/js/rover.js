@@ -583,8 +583,8 @@ rover.render_wheel = function(wheel) {
 
   imageset.render(
     rover.wheels,
-     8 * animation_frame + 1,2,
-     5,6,
+     8 * animation_frame + 1,1,
+     5,7,
      x,y
   );
 }
@@ -593,7 +593,7 @@ rover.render_head = function() {
   imageset.render(
     rover.head,
      (rover.head_frame * 16),0,
-     16,6,
+     16,8,
      Math.floor(rover.x), Math.floor(rover.y) + rover.chassis_offset_y
   );
 
