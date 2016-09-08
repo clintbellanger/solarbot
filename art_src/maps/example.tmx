@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="24" tilewidth="16" tileheight="16" backgroundcolor="#272c4a" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="24" tilewidth="16" tileheight="16" backgroundcolor="#272c4a" nextobjectid="11">
  <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="32" columns="4">
   <image source="../../release/images/tileset_gutters.png" width="80" height="160"/>
  </tileset>
- <layer name="Tile Layer 1" width="64" height="24">
+ <tileset firstgid="33" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
+  <image source="items.png" width="16" height="96"/>
+ </tileset>
+ <tileset firstgid="39" name="bots" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="18" columns="2">
+  <image source="bots.png" width="40" height="160"/>
+ </tileset>
+ <layer name="background" width="64" height="24">
   <data encoding="csv">
 0,1,2,2,2,2,2,3,1,2,3,10,10,1,2,3,1,2,2,2,2,2,2,3,1,2,11,9,11,2,3,11,11,11,1,2,2,2,2,3,0,0,0,0,0,0,0,0,0,18,16,18,18,16,18,19,15,16,16,18,18,0,0,0,
 2,3,6,0,0,0,0,0,5,5,10,9,10,10,5,5,0,5,6,5,0,0,0,0,5,5,5,12,5,5,5,5,5,6,12,0,5,5,0,10,1,2,3,9,1,2,2,3,19,15,15,22,22,31,31,0,0,0,0,17,18,0,0,0,
@@ -31,4 +37,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,18,14,16,15,13,14,14,16,14,14,14,15
 </data>
  </layer>
+ <objectgroup name="items">
+  <object id="2" gid="34" x="16" y="112" width="16" height="16"/>
+  <object id="7" gid="35" x="208" y="112" width="16" height="16"/>
+  <object id="9" gid="33" x="480" y="112" width="16" height="16"/>
+  <object id="10" gid="33" x="48" y="240" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup name="bots">
+  <object id="8" gid="40" x="176" y="112" width="16" height="16"/>
+ </objectgroup>
 </map>
