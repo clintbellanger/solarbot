@@ -121,3 +121,22 @@ labyrinth.draw_room = function() {
   }
 
 }
+
+labyrinth.load_map = function(map_obj) {
+  
+  labyrinth.room_span_x = map_obj.width / labyrinth.room_tile_width;
+  labyrinth.room_span_y = map_obj.height / labyrinth.room_tile_height;
+  
+  // reinit 2d map array
+  labyrinth.world_tiles = [];
+  for (var rows=0; rows<map_obj.height; rows++) {
+    labyrinth.world_tiles[rows] = []; 
+  }  
+  
+  for (var j=0; j<map_obj.height; j++) {
+    for (var i=0; i<map_obj.width; i++) {      
+      labyrinth.world_tiles[j][i] = map_obj.layers[0].data[ j * map_obj.width + i];      
+    }
+  }
+  
+}
