@@ -54,8 +54,8 @@ pickups.init = function() {
   pickups.on_screen.index = 0;
 
   // indexes of these two arrays match
-  pickups.map_data = new Array();
-  pickups.collected = new Array();
+  pickups.map_data = [];
+  pickups.collected = [];
   
   pickups.init_map_data();
 
@@ -82,8 +82,20 @@ pickups.init_map_data = function() {
   pickups.map_data[6] = {type: pickups.BOOSTER, room_x:5, room_y: 2, tile_x: 1, tile_y: 4};
   pickups.map_data[7] = {type: pickups.MINIMAP, room_x:1, room_y: 0, tile_x: 4, tile_y: 6};
 
-  
-  
+}
+
+/**
+ Place a single item on the map and mark it as not yet picked up
+ */
+pickups.add = function(type_id, room_x, room_y, tile_x, tile_y) {
+  pickups.map_data.push({type: type_id, room_x: room_x, room_y: room_y, tile_x: tile_x, tile_y: tile_y});
+  var new_id = pickups.map_data.length -1;
+  pickups.collected[new_id] = false;  
+}
+
+pickups.clear_all = function() {
+  pickups.map_data = [];
+  pickups.collected = [];  
 }
 
 pickups.logic = function() {

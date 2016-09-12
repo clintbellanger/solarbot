@@ -122,21 +122,81 @@ labyrinth.draw_room = function() {
 
 }
 
-labyrinth.load_map = function(map_obj) {
-  
-  labyrinth.room_span_x = map_obj.width / labyrinth.room_tile_width;
-  labyrinth.room_span_y = map_obj.height / labyrinth.room_tile_height;
-  
+/** Below functions specific to Tiled js maps **/
+
+
+// find layer id by name in javascript map object
+labyrinth.tiled_layer_lookup = function(map_obj, layer_name) {
+  for (var i=0; i < map_obj.layers.length; i++) {
+	if (layer_name == map_obj.layers[i].name) return i;
+  }
+  console.log("Error: map is missing a required layer named " + layer_name);
+}
+
+// similar to above but for tilesets
+labyrinth.tiled_tileset_lookup = function(map_obj, tileset_name) {
+  for (var i=0; i < map_obj.tilesets.length; i++) {
+	if (tileset_name == map_obj.tilesets[i].name) return i;
+  }
+  console.log("Error: map is missing a required tileset named " + tileset_name);
+}
+
+labyrinth.tiled_load_tiles = function(map_obj) {
+
   // reinit 2d map array
   labyrinth.world_tiles = [];
   for (var rows=0; rows<map_obj.height; rows++) {
     labyrinth.world_tiles[rows] = []; 
-  }  
+  }
+    
+  // load background tiles  
+  var tile_layer = labyrinth.tiled_layer_lookup(map_obj, "tiles");
+  var tile_data = map_obj.layers[tile_layer].data;
   
   for (var j=0; j<map_obj.height; j++) {
-    for (var i=0; i<map_obj.width; i++) {      
-      labyrinth.world_tiles[j][i] = map_obj.layers[0].data[ j * map_obj.width + i];      
+    for (var i=0; i<map_obj.width; i++) {
+      labyrinth.world_tiles[j][i] = tile_data[j * map_obj.width + i]; // WARN: note [j][i]
     }
   }
+
+}
+
+
+labyrinth.tiled_load_pickups = function(map_obj) {
+
+  var item_tileset_id = labyrinth.tiled_tileset_lookup(map_obj, "items");
+  var items_firstgid = map_obj.tilesets[item_tileset_id].firstgid;
   
+  var item_layer = labyrinth.tiled_layer_lookup(map_obj, "items");
+  var item_data = map_obj.layers[item_layer].objects;  
+  var item_type, room_x, room_y, tile_x, tile_y; // prep for pickups.add_pickup()
+  var world_tile_x, world_tile_y;
+  
+  pickups.clear_all();
+  
+  for (var item_i=0; item_i < item_data.length; item_i++) {
+  
+    item_type = item_data[item_i].gid - items_firstgid; // assumes item types 'enum' matches tile order
+	
+	world_tile_x = item_data[item_i].x /  tileset.tile_size;
+	world_tile_y = item_data[item_i].y /  tileset.tile_size;
+	room_x = Math.floor(world_tile_x / labyrinth.room_tile_width);
+	room_y = Math.floor(world_tile_y / labyrinth.room_tile_height);
+	tile_x = world_tile_x % labyrinth.room_tile_width;
+	tile_y = world_tile_y % labyrinth.room_tile_height;
+	pickups.add(item_type, room_x, room_y, tile_x, tile_y);	
+	
+  }
+}
+
+labyrinth.tiled_load_map = function(map_name) {
+  var map_obj = TileMaps[map_name];
+  
+  labyrinth.room_span_x = map_obj.width / labyrinth.room_tile_width;
+  labyrinth.room_span_y = map_obj.height / labyrinth.room_tile_height;
+  
+  labyrinth.tiled_load_tiles(map_obj);
+  labyrinth.tiled_load_pickups(map_obj);
+  
+    
 }

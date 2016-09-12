@@ -3,7 +3,13 @@
  <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="32" columns="4">
   <image source="../../release/images/tileset_gutters.png" width="80" height="160"/>
  </tileset>
- <layer name="Tile Layer 1" width="64" height="24">
+ <tileset firstgid="33" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
+  <image source="items.png" width="16" height="96"/>
+ </tileset>
+ <tileset firstgid="39" name="bots" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="20" columns="2">
+  <image source="bots.png" width="40" height="160"/>
+ </tileset>
+ <layer name="tiles" width="64" height="24">
   <data encoding="csv">
 1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,10,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,10,10,2,2,2,3,
 11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,
@@ -31,4 +37,6 @@
 1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,7,7,7,7,7,7,3,1,2,7,7,7,7,7,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3,1,2,2,2,2,2,2,3
 </data>
  </layer>
+ <objectgroup name="items"/>
+ <objectgroup name="bots"/>
 </map>
