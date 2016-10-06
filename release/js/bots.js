@@ -13,6 +13,7 @@ bots.init = function() {
   
   // enumeration of the bot types
   bots.types = {};
+  bots.types.ROVER = 0;
   bots.types.TANK = 1;   // green claw bot, moves left/right on platform
   bots.types.PISTON = 2; // green piston bot, as above but speeds up vs the rover
   bots.types.DRONE = 3;  // orange bot with gears on top, flies up/down
@@ -31,7 +32,7 @@ bots.init = function() {
   bots.state = []; // index is bot_id
   // values are internal animation and logic info, varying by bot type
   // bots.state[].type is of value bots.types
-  // this is any calculated data that persist btw frames e.g. speed, facing
+  // this is any calculated data that persist btw frames e.g. speed, `
   
   bots.sprite = []; // index is bot_id
   // values are {src_x, src_y, dest_x, dest_y}
@@ -106,6 +107,12 @@ bots.init_spawns = function() {
   
 }
 
+// set up spawn point for a specific bot
+bots.add_spawn = function(bot_type, room_x, room_y, tile_x, tile_y, facing) {
+  bots.spawn.push({type:bot_type, room_x:room_x, room_y:room_y, tile_x:tile_x, tile_y:tile_y, facing:facing}); 
+}
+
+// place bot into current room
 bots.add = function(bot_type, grid_x, grid_y, facing) {
   
   var bot_id = bots.count;
