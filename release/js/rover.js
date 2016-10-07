@@ -55,8 +55,8 @@ rover.init = function() {
 
   // rover current state   
   // horizontal
-  rover.x = 56;
-  rover.y = 20;
+  rover.x = 0;
+  rover.y = 0;
   rover.speed_x = 0.0;
   rover.speed_y = 0.0;
   // vertical
@@ -98,9 +98,11 @@ rover.init = function() {
   
 }
 
-//rover.get_rect = function() {
-//  return {x:rover.x, y:rover.y, w:rover.width, h:rover.height}; 
-//}
+rover.new_map_spawn = function() {
+  rover.x = labyrinth.spawn_pos.tile_x * tileset.tile_size;
+  rover.y = labyrinth.spawn_pos.tile_y * tileset.tile_size;
+  rover.facing = labyrinth.spawn_pos.facing;
+}
 
 rover.get_collision_box = function() {
 
@@ -142,7 +144,7 @@ rover.logic = function() {
   rover.position_chassis();
    
   // explore minimap
-  minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
+  //minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
   
   // temporary statuses
   if (rover.invulnerable_frames > 0) rover.invulnerable_frames--;

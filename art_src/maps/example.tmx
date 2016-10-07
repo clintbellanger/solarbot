@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="24" tilewidth="16" tileheight="16" backgroundcolor="#272c4a" nextobjectid="19">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="24" tilewidth="16" tileheight="16" backgroundcolor="#272c4a" nextobjectid="26">
  <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="32" columns="4">
   <image source="../../release/images/tileset_gutters.png" width="80" height="160"/>
  </tileset>
@@ -48,6 +48,7 @@
   <object id="18" gid="36" x="672" y="96" width="16" height="16"/>
  </objectgroup>
  <objectgroup name="bots">
-  <object id="8" gid="40" x="176" y="112" width="16" height="16"/>
+  <object id="22" gid="42" x="176" y="112" width="16" height="16"/>
+  <object id="25" gid="40" x="64" y="48" width="16" height="16"/>
  </objectgroup>
 </map>

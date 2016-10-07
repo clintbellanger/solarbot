@@ -6,12 +6,13 @@ pickups.init = function() {
   pickups.img = imageset.load("images/pickups.png");
   
   // each pickup type and info
+  // this enum should match the items.png tileset order
   pickups.BATTERY = 0;
   pickups.JUMP = 1;
-  pickups.DOUBLE_JUMP = 2;
-  pickups.BOOSTER = 3;
-  pickups.DRILL = 4;
-  pickups.MINIMAP = 5;
+  pickups.MINIMAP = 2;
+  pickups.DRILL = 3;
+  pickups.DOUBLE_JUMP = 4;
+  pickups.BOOSTER = 5;
   
   pickups.info = new Array();
   

@@ -8,7 +8,7 @@ tiled.convert_global_position = function(pixel_x, pixel_y) {
   var world_tile_x, world_tile_y;
   var map_pos = {};
   world_tile_x = pixel_x /  tileset.tile_size;
-  world_tile_y = pixel_y /  tileset.tile_size;
+  world_tile_y = (pixel_y - tileset.tile_size) /  tileset.tile_size; // Tiled object origin is bottom left, we want top left
   map_pos.room_x = Math.floor(world_tile_x / labyrinth.room_tile_width);
   map_pos.room_y = Math.floor(world_tile_y / labyrinth.room_tile_height);
   map_pos.tile_x = world_tile_x % labyrinth.room_tile_width;
@@ -84,20 +84,19 @@ tiled.load_bots = function(map_obj) {
   var bot_data = map_obj.layers[bot_layer].objects;
   var bot_gid, bot_type, facing;
   var map_pos;
-  
+    
   for (var i=0; i < bot_data.length; i++) {
-      
+    
     // WARN: this code block is overly specific to solarbot.
     // taking the gids listed in the Tiled map and converting
     // to bot type and facing direction.
-    // TODO: Possibly better done with Tiled tile properties on those bots.
-    
-    bot_gid = bot_data[i].gid - bots.firstgid;
-    
+    // TODO: Possibly better done with Tiled tile properties on those bots.    
+    bot_gid = bot_data[i].gid - bots_firstgid;
+
     // convert to bot type and facing
     // look at the tiled bots.png tileset to see what this is doing    
     bot_type = Math.floor(bot_gid/2); // see bots.types. Rover = 0, etc.
-    bot_facing = (bot_gid % 2) + 1; // see bots.directions. left, right
+    bot_facing = (bot_gid%2); // see bots.directions. left, right
     
     if (bot_type == bots.types.SENTRY) {
        bot_facing += 2; // up/down instead of left/right
@@ -107,8 +106,10 @@ tiled.load_bots = function(map_obj) {
     
     if (bot_type == bots.types.ROVER) {
       // set new player spawn point 
+      labyrinth.spawn_pos = {room_x: map_pos.room_x, room_y: map_pos.room_y, tile_x: map_pos.tile_x, tile_y: map_pos.tile_y, facing: bot_facing};
     }
     else {
+      console.log("bot_type " + bot_type + " facing " + bot_facing);
       bots.add_spawn(bot_type, map_pos.room_x, map_pos.room_y, map_pos.tile_x, map_pos.tile_y, bot_facing);
     }
   }
@@ -125,7 +126,5 @@ tiled.load_map = function(map_name) {
   tiled.load_pickups(map_obj);
   tiled.load_bots(map_obj);
   
-  // restart game with new map
-  
-  
+  labyrinth.load_room(labyrinth.spawn_pos.room_x, labyrinth.spawn_pos.room_y);
 }

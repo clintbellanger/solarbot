@@ -76,6 +76,8 @@ function init_all() {
   particles.init();  
   battery.init();
   minimap.init();
+  tiled.load_map("example");
+  rover.new_map_spawn();
 }
 
 // initialize all game units changed during gameplay
@@ -91,6 +93,9 @@ function reset_game() {
   powerups.init();
   rover.init();  
   battery.init();
-  minimap.init();  
+  minimap.init();
+  tiled.load_map("example");
+  rover.new_map_spawn();
+
   gamestate = STATE_EXPLORE; // TODO: circular dependency?
 }

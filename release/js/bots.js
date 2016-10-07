@@ -21,10 +21,10 @@ bots.init = function() {
   bots.types.SENTRY = 5; // red bot with spike, flies up/down on rover proximity  
   
   bots.directions = {};
-  bots.directions.LEFT = 1;
-  bots.directions.RIGHT = 2;
-  bots.directions.UP = 3;
-  bots.directions.DOWN = 4;
+  bots.directions.LEFT = 0;
+  bots.directions.RIGHT = 1;
+  bots.directions.UP = 2;
+  bots.directions.DOWN = 3;
   
   bots.metadata = []; // index is bots.types
   // values that are static metadata, e.g. frame info. varying by bot type    
@@ -44,7 +44,6 @@ bots.init = function() {
  
   bots.load_metadata();
   bots.spawns = [];
-  bots.init_spawns();
 }
 
 bots.load_metadata = function() {
@@ -96,6 +95,7 @@ bots.load_metadata = function() {
   
 }
 
+/*
 bots.init_spawns = function() {
 
   bots.spawns[0] = {type:bots.types.TANK, room_x:1, room_y:0, tile_x:3, tile_y:6, facing:bots.directions.RIGHT};
@@ -106,10 +106,11 @@ bots.init_spawns = function() {
   bots.spawns[5] = {type:bots.types.UFO, room_x:1, room_y:1, tile_x:3, tile_y:4, facing:bots.directions.RIGHT};
   
 }
+*/
 
 // set up spawn point for a specific bot
 bots.add_spawn = function(bot_type, room_x, room_y, tile_x, tile_y, facing) {
-  bots.spawn.push({type:bot_type, room_x:room_x, room_y:room_y, tile_x:tile_x, tile_y:tile_y, facing:facing}); 
+  bots.spawns.push({type:bot_type, room_x:room_x, room_y:room_y, tile_x:tile_x, tile_y:tile_y, facing:facing}); 
 }
 
 // place bot into current room

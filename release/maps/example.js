@@ -133,9 +133,9 @@
          "name":"bots",
          "objects":[
                 {
-                 "gid":40,
+                 "gid":42,
                  "height":16,
-                 "id":8,
+                 "id":22,
                  "name":"",
                  "rotation":0,
                  "type":"",
@@ -143,6 +143,18 @@
                  "width":16,
                  "x":176,
                  "y":112
+                }, 
+                {
+                 "gid":40,
+                 "height":16,
+                 "id":25,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":64,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -151,7 +163,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":19,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,
