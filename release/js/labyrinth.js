@@ -7,6 +7,8 @@ var labyrinth = {};
 
 labyrinth.init = function() {
   
+  // labyrinth.mapfile; //  tiled.load_map()
+  
   labyrinth.room_tile_width = 8;
   labyrinth.room_tile_height = 8;
   

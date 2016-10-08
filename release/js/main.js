@@ -56,6 +56,12 @@ function init() {
 
   init_all();
   
+  // TEMP set default map
+  // TODO: set this during switch from title screen gamestate
+  labyrinth.mapfile = "example";
+  tiled.load_map(labyrinth.mapfile);
+  rover.new_map_spawn();
+  
   setInterval(function() {
     logic();
     render();
@@ -76,8 +82,6 @@ function init_all() {
   particles.init();  
   battery.init();
   minimap.init();
-  tiled.load_map("example");
-  rover.new_map_spawn();
 }
 
 // initialize all game units changed during gameplay
@@ -94,7 +98,7 @@ function reset_game() {
   rover.init();  
   battery.init();
   minimap.init();
-  tiled.load_map("example");
+  tiled.load_map(labyrinth.mapfile);
   rover.new_map_spawn();
 
   gamestate = STATE_EXPLORE; // TODO: circular dependency?

@@ -3,12 +3,13 @@
  <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="32" columns="4">
   <image source="../../release/images/tileset_gutters.png" width="80" height="160"/>
  </tileset>
- <tileset firstgid="33" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
+<tileset firstgid="33" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
   <image source="items.png" width="16" height="96"/>
  </tileset>
  <tileset firstgid="39" name="bots" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="16" columns="2">
   <image source="bots.png" width="40" height="160"/>
  </tileset>
+ 
  <layer name="tiles" width="64" height="24">
   <data encoding="csv">
 0,1,2,2,2,2,2,3,1,2,3,10,10,1,2,3,1,2,2,2,2,2,2,3,1,2,11,9,11,2,3,11,11,11,1,2,2,2,2,3,0,0,0,0,0,0,0,0,0,18,16,18,18,16,18,19,15,16,16,18,18,0,0,0,

@@ -109,7 +109,6 @@ tiled.load_bots = function(map_obj) {
       labyrinth.spawn_pos = {room_x: map_pos.room_x, room_y: map_pos.room_y, tile_x: map_pos.tile_x, tile_y: map_pos.tile_y, facing: bot_facing};
     }
     else {
-      console.log("bot_type " + bot_type + " facing " + bot_facing);
       bots.add_spawn(bot_type, map_pos.room_x, map_pos.room_y, map_pos.tile_x, map_pos.tile_y, bot_facing);
     }
   }
