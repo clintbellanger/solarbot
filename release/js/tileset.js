@@ -37,6 +37,7 @@ tileset.init = function() {
   tileset.info[9].collide = true;
   tileset.info[10].collide = true;
   tileset.info[11].collide = true;
+  tileset.info[12].collide = true;
   tileset.info[13].collide = true;
   tileset.info[14].collide = true;
   tileset.info[15].collide = true;

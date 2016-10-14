@@ -42,7 +42,7 @@ function gamestate_logic() {
 
 function gamestate_render() {
 
-  clear_canvas("#272c4a");
+  clear_canvas("#222034");
 
   switch(gamestate) {
   
