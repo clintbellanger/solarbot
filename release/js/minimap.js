@@ -42,14 +42,18 @@ minimap.init = function() {
   minimap.tile_src[14] = {x:17, y:25};
   minimap.tile_src[15] = {x:25, y:25};
   
+  minimap.reset_minimap(labyrinth.room_span_x, labyrinth.room_span_y);
+}
+
+minimap.reset_minimap = function(size_x, size_y) {
   
-  // remember which rooms we've visited
-  minimap.visited = new Array();
-  for (var i=0; i<labyrinth.room_span_x; i++) {
-    minimap.visited[i] = new Array();
-	for (var j=0; j<labyrinth.room_span_y; j++) {
-	  minimap.visited[i][j] = false;
-	}
+  // this array remember which rooms we've visited
+  minimap.visited = [];
+  for (var i=0; i<size_x; i++) {
+    minimap.visited[i] = [];
+    for (var j=0; j<size_y; j++) {
+      minimap.visited[i][j] = false;
+      }
   }
 }
 
@@ -65,9 +69,9 @@ minimap.render_background = function() {
   // blank background and frame
   imageset.render(
     minimap.hud_img,
-	minimap.background_src.x, minimap.background_src.y,
-	minimap.background_src.w, minimap.background_src.h,
-	minimap.screen_pos.x, minimap.screen_pos.y
+    minimap.background_src.x, minimap.background_src.y,
+    minimap.background_src.w, minimap.background_src.h,
+    minimap.screen_pos.x, minimap.screen_pos.y
   );
 }
 
@@ -80,20 +84,20 @@ minimap.render_grid = function() {
   
   for (var i=-2; i<=2; i++) {
     for (var j=-1; j<=1; j++) {
-	
-	  room_lookup_x = labyrinth.current_room_x + i;
-	  room_lookup_y = labyrinth.current_room_y + j;
-	  
-	  // is this room inside the map bounds?
+    
+      room_lookup_x = labyrinth.current_room_x + i;
+      room_lookup_y = labyrinth.current_room_y + j;
+      
+      // is this room inside the map bounds?
       if (labyrinth.valid_room(room_lookup_x, room_lookup_y)) {
 
-        // have we visited this room?	  
-	    if (minimap.visited[room_lookup_x][room_lookup_y]) {	  
+        // have we visited this room?      
+        if (minimap.visited[room_lookup_x][room_lookup_y]) {      
           minimap_tile = labyrinth.get_room_tile(room_lookup_x, room_lookup_y);
-	      minimap.render_cell(i,j, minimap_tile);
-		}
-	  }
-	}
+          minimap.render_cell(i,j, minimap_tile);
+        }
+      }
+    }
   }
 
 }
@@ -112,10 +116,10 @@ minimap.render_cell = function(cell_x, cell_y, minimap_tile_id) {
   imageset.render(
     minimap.hud_img,
     minimap.tile_src[minimap_tile_id].x,
-	minimap.tile_src[minimap_tile_id].y,
-	minimap.tile_size, minimap.tile_size,
-	pixel_x + minimap.screen_pos.x + minimap.padding,
-	pixel_y + minimap.screen_pos.y + minimap.padding
+    minimap.tile_src[minimap_tile_id].y,
+    minimap.tile_size, minimap.tile_size,
+    pixel_x + minimap.screen_pos.x + minimap.padding,
+    pixel_y + minimap.screen_pos.y + minimap.padding
   );
 
 }
@@ -123,12 +127,12 @@ minimap.render_cell = function(cell_x, cell_y, minimap_tile_id) {
 minimap.render_youarehere = function() {
   imageset.render(
     minimap.hud_img,
-	minimap.youarehere_src.x,
-	minimap.youarehere_src.y,
-	minimap.youarehere_src.w,
-	minimap.youarehere_src.h,
-	minimap.youarehere_dest.x,
-	minimap.youarehere_dest.y
+    minimap.youarehere_src.x,
+    minimap.youarehere_src.y,
+    minimap.youarehere_src.w,
+    minimap.youarehere_src.h,
+    minimap.youarehere_dest.x,
+    minimap.youarehere_dest.y
   );
 }
 

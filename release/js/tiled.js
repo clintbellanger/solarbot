@@ -120,10 +120,12 @@ tiled.load_map = function(map_name) {
   
   labyrinth.room_span_x = map_obj.width / labyrinth.room_tile_width;
   labyrinth.room_span_y = map_obj.height / labyrinth.room_tile_height;
+  minimap.reset_minimap(labyrinth.room_span_x, labyrinth.room_span_y);
   
   tiled.load_tiles(map_obj);
   tiled.load_pickups(map_obj);
   tiled.load_bots(map_obj);
   
   labyrinth.load_room(labyrinth.spawn_pos.room_x, labyrinth.spawn_pos.room_y);
+  
 }

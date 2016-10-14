@@ -29,6 +29,14 @@ labyrinth.init = function() {
   // overall world map
   labyrinth.world_tiles = [];
   labyrinth.minimap_room_tiles = [];
+  
+  // TODO: way to calculate this?
+  // I suspect split rooms can be interpreted different ways, so maybe this
+  // should be set by hand anyway?
+  labyrinth.minimap_room_tiles = [
+    [8,12,14,12,6,8,14,6],
+    [8,12,13,12,13,12,15,7],
+    [0,0,0,0,0,8,13,5]];  
 
 }
 

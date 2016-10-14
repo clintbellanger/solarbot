@@ -144,7 +144,7 @@ rover.logic = function() {
   rover.position_chassis();
    
   // explore minimap
-  //minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
+  minimap.visited[labyrinth.current_room_x][labyrinth.current_room_y] = true;
   
   // temporary statuses
   if (rover.invulnerable_frames > 0) rover.invulnerable_frames--;

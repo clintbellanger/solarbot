@@ -53,7 +53,7 @@ function gamestate_render() {
       pickups.render();
       particles.render();
       battery.render();
-      //minimap.render();
+      minimap.render();
       messages.render_message();
       break;
       
@@ -63,7 +63,7 @@ function gamestate_render() {
       bots.render();
       particles.render();
       battery.render();
-      //minimap.render();
+      minimap.render();
       
       if (pressing.escape && !input_lock.escape) {
         input_lock.escape = true;
