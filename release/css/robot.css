@@ -3,12 +3,18 @@
   padding: 0;
 }
 
+html {
+  touch-action: none;
+}
+
 body {
   background-color: #000000;
+  touch-action: none;
 }
 
 canvas {
   background-color: #999999;
   display: block;
   margin: auto;
+  touch-action: none;
 }
