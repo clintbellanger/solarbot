@@ -79,7 +79,8 @@ function init_all() {
   labyrinth.init();
   powerups.init();
   rover.init();  
-  particles.init();  
+  particles.init();
+  touchbuttons.init();
   battery.init();
   minimap.init();
 }
@@ -95,7 +96,8 @@ function reset_game() {
   bots.init();
   labyrinth.init();
   powerups.init();
-  rover.init();  
+  rover.init();
+  touchbuttons.init();
   battery.init();
   minimap.init();
   tiled.load_map(labyrinth.mapfile);

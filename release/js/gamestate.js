@@ -22,8 +22,9 @@ function gamestate_logic() {
       bots.logic();
       imageset.logic();
       battery.logic();
-	    pickups.logic();
+      pickups.logic();
       particles.logic();
+      touchbuttons.logic();
       
       if (rover.died) gamestate = STATE_DEAD;
       
@@ -54,6 +55,7 @@ function gamestate_render() {
       particles.render();
       battery.render();
       minimap.render();
+      touchbuttons.render();
       messages.render_message();
       break;
       

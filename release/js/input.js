@@ -29,14 +29,13 @@ input_lock.escape = false;
 
 var mouse_pos = {x:0, y:0};
 
+var touch_detected = false;
 var virtual_buttons = new Object();
 
 // bleed over canvas by 1 tile size, helps with touching edges
-virtual_buttons.left = {x:-16, y:80, w:80, h:64};
-virtual_buttons.right = {x:64, y:80, w:80, h:64};
-virtual_buttons.up = {x:-16, y:32, w:160, h:48};
-
-
+virtual_buttons.left = {x:-16, y:88, w:48, h:56};
+virtual_buttons.right = {x:32, y:88, w:48, h:56};
+virtual_buttons.up = {x:80, y:88, w:64, h:56};
 
 //---- Key Bindings -------------------------------------------------
 
@@ -157,6 +156,7 @@ var ongoingTouches = new Array();
 
 function handleTouchStart(evt) {
   evt.preventDefault();
+  touch_detected = true;
   var touches = evt.changedTouches;
   
   for (var i=0; i < touches.length; i++) {

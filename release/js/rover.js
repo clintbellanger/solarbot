@@ -34,7 +34,7 @@ rover.init = function() {
   rover.margin_top = 4;
   rover.margin_left = 2
   rover.margin_right = 2
-  rover.margin_bottom = 1;
+  rover.margin_bottom = 2;
 
   // rover movement properties
   // horizontal
