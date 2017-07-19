@@ -32,6 +32,8 @@ var mouse_pos = {x:0, y:0};
 var touch_detected = false;
 var virtual_buttons = new Object();
 
+var touch_moved = false;
+
 // bleed over canvas by 1 tile size, helps with touching edges
 virtual_buttons.left = {x:-16, y:88, w:48, h:56};
 virtual_buttons.right = {x:32, y:88, w:48, h:56};
@@ -163,6 +165,7 @@ function handleTouchStart(evt) {
     ongoingTouches.push(copyTouch(touches[i]));
 	touchVirtualButtonPress(touches[i]);
   }
+  
 }
 
 function handleTouchEnd(evt) {
@@ -177,6 +180,44 @@ function handleTouchEnd(evt) {
 	  ongoingTouches.splice(index, 1);
 	}
   }
+}
+
+function handleTouchMove(evt) {
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+  var index;
+  
+  // update positions
+  for (var i=0; i<touches.length; i++) {
+    index = ongoingTouchById(touches[i].identifier);
+	if (index >= 0) {
+	  ongoingTouches[index].pageX = touches[i].pageX;
+      ongoingTouches[index].pageY = touches[i].pageY;
+	}
+  }  
+
+  // tell the logic loop to recheck Virtual Buttons
+  touch_moved = true;
+}
+
+// call only once per frame if touch moved
+function recheckVirtualButtons() {
+
+  // remember previous frame's input lock
+  var prev_up = input_lock.up;
+  var prev_left = input_lock.left;
+  var prev_right = input_lock.right;
+  
+  simulateRelease();
+  for (var i=0; i<ongoingTouches.length; i++) {    
+    touchVirtualButtonPress(ongoingTouches[i]);
+  }
+  
+  // if a button hasn't changed, keep its input lock
+  if (pressing.up && prev_up) input_lock.up = true;
+  if (pressing.left && prev_left) input_lock.left = true;
+  if (pressing.right && prev_right) input_lock.right = true;
+  
 }
 
 function copyTouch(touch) {

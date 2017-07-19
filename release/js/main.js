@@ -44,6 +44,7 @@ function init() {
     window.addEventListener('mouseup', handleMouseUp, true);
     window.addEventListener('touchstart', handleTouchStart, true);
     window.addEventListener('touchend', handleTouchEnd, true);
+    window.addEventListener('touchmove', handleTouchMove, true);
     window.addEventListener('resize', resizeCanvas, false);
     window.addEventListener('orientationchange', resizeCanvas, false);
   }

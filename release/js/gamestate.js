@@ -10,6 +10,10 @@ var gamestate = STATE_EXPLORE;
 
 function gamestate_logic() {
 
+  // do this once per frame instead of anytime / multiple times during the loop
+  if (touch_moved) recheckVirtualButtons();  
+  touch_moved = false;
+
   // halt all game logic (used for hit stun emphasis)
   if (imageset.freeze_frames > 0) {
     imageset.freeze_frames--;
