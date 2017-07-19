@@ -414,6 +414,7 @@ rover.take_damage = function(dmg) {
   battery.spend_energy(dmg);
   particles.preset_sparks_area(rover.get_collision_box(), 10);
   particles.preset_smoke_area(rover.get_collision_box(), 5);
+  window.navigator.vibrate(50);
 }
 
 rover.check_death = function() {
