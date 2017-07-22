@@ -231,7 +231,7 @@ rover.jump = function() {
     if (pressing.up && !input_lock.up && !rover.on_ground) {
         input_lock.up = true; // must release this button before jumping again
         rover.jump_startup_frames_remaining = powerups.doublejump.max_frames;
-        powerups.doublejump.used = true; // resets upon landing
+        powerups.doublejump.used = true; // resets upon landing or bouncing
       }
   }  
   
@@ -403,18 +403,45 @@ rover.check_bots = function() {
   cbox = rover.get_collision_box();
   
   if (collision.rover_vs_bots(cbox)) {
-    rover.take_damage(1);  
+  
+    // bounce off robots if we are falling
+    if (rover.speed_y > 0.0 + rover.gravity_acceleration) {
+      
+      // rebound at the speed of tapping jump for 1 frame
+      rover.speed_y = rover.jump_speed_y;
+      
+      // all the effects like invulnerability and sparks
+      rover.take_damage(0);
+      
+      // start jumping if pressing up
+      if (pressing.up) {
+        rover.jump_startup_frames_remaining = rover.jump_max_frames;
+        rover.speed_y = rover.jump_speed_y;
+        input_lock.up = true;
+      }
+      
+      // reset double jump
+      powerups.doublejump.used = false;
+      
+    }
+    else {
+      rover.take_damage(1);  
+    }
   }
 }
 
 rover.take_damage = function(dmg) {
-  imageset.shaking = 10;
-  imageset.freeze_frames = 5;
-  rover.invulnerable_frames = rover.invulnerable_length;
-  battery.spend_energy(dmg);
-  particles.preset_sparks_area(rover.get_collision_box(), 10);
+  
+  rover.invulnerable_frames = rover.invulnerable_length;  
   particles.preset_smoke_area(rover.get_collision_box(), 5);
-  window.navigator.vibrate(50);
+  
+  if (dmg > 0) {
+    particles.preset_sparks_area(rover.get_collision_box(), 10);
+    battery.spend_energy(dmg);
+    imageset.freeze_frames = 5;
+    window.navigator.vibrate(50);
+    imageset.shaking = 10;   
+  }
 }
 
 rover.check_death = function() {
