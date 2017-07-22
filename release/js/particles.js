@@ -161,11 +161,12 @@ particles.below_view = function(pid) {
 }
 
 particles.render = function() {
-  ctx.globalCompositeOperation = "lighter";
+  // test option - glowing particles
+  //ctx.globalCompositeOperation = "lighter";
   for (var i=particles.plist.length-1; i>=0; i--) {
     particles.render_single(i);
   }
-  ctx.globalCompositeOperation = "source-over";
+  //ctx.globalCompositeOperation = "source-over";
 }
 
 particles.render_single = function(pid) {

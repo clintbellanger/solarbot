@@ -62,6 +62,7 @@ bots.load_metadata = function() {
   tank.max_speed[bots.directions.LEFT] = -0.5;
   tank.max_speed[bots.directions.RIGHT] = 0.5;
   tank.on_ground = true;
+  tank.hazardous_top = false;
 
   // UFO
   bots.metadata[bots.types.UFO] = {};
@@ -77,6 +78,7 @@ bots.load_metadata = function() {
   ufo.max_speed[bots.directions.LEFT] = -1;
   ufo.max_speed[bots.directions.RIGHT] = 1;
   ufo.on_ground = false;
+  ufo.hazardous_top = false;
   
   // DRONE
   bots.metadata[bots.types.DRONE] = {};
@@ -91,7 +93,8 @@ bots.load_metadata = function() {
   drone.max_speed = [];
   drone.max_speed[bots.directions.LEFT] = -0.5;
   drone.max_speed[bots.directions.RIGHT] = 0.5;
-  drone.on_ground = false;  
+  drone.on_ground = false;
+  drone.hazardous_top = true;
   
 }
 
@@ -285,6 +288,7 @@ bots.logic_ufo = function(bot_id) {
 }
 
 // drones patrol up/down in mid air
+// drones also have hazardous_top so it hurts to bounce on them
 bots.logic_drone = function(bot_id) {
 
   var drone = bots.state[bot_id];

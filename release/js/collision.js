@@ -277,13 +277,15 @@ collision.drillBrickRight = function(rect, power) {
   }  
 }
 
+// return a list of all bots touching the rover
 collision.rover_vs_bots = function(rover_cbox) {
+  var touching = [];  
   for (var i=0; i<bots.count; i++) {
     if (collision.rectsOverlap(rover_cbox, bots.collision[i])) {
-	  return true;
+	  touching.push(i);
 	}
   }
-  return false;
+  return touching;
 }
 
 

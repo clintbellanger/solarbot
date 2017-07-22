@@ -402,16 +402,27 @@ rover.check_bots = function() {
   
   cbox = rover.get_collision_box();
   
-  if (collision.rover_vs_bots(cbox)) {
+  // list of bots we are touching
+  var touching = collision.rover_vs_bots(cbox);
+
+  // allow bouncing off robots if we are falling  
+  var can_bounce = rover.speed_y > (0.0 + rover.gravity_acceleration);
+  for (var i=0; i<touching.length; i++) {
+    if (bots.metadata[bots.state[touching[i]].type].hazardous_top) {
+      can_bounce = false;
+    }
+  }
   
-    // bounce off robots if we are falling
-    if (rover.speed_y > 0.0 + rover.gravity_acceleration) {
+  // if the rover has touched any bot
+  if (touching.length > 0) {
+  
+    if (can_bounce) {
       
       // rebound at the speed of tapping jump for 1 frame
       rover.speed_y = rover.jump_speed_y;
       
-      // all the effects like invulnerability and sparks
-      rover.take_damage(0);
+      // enough time to get out of the way
+      rover.invulnerable_frames = rover.invulnerable_length/2;
       
       // start jumping if pressing up
       if (pressing.up) {
@@ -423,6 +434,9 @@ rover.check_bots = function() {
       // reset double jump
       powerups.doublejump.used = false;
       
+      // visual indicator
+      particles.preset_smoke_area(rover.get_collision_box(), 5);
+      
     }
     else {
       rover.take_damage(1);  
@@ -430,18 +444,14 @@ rover.check_bots = function() {
   }
 }
 
-rover.take_damage = function(dmg) {
-  
+rover.take_damage = function(dmg) {  
   rover.invulnerable_frames = rover.invulnerable_length;  
   particles.preset_smoke_area(rover.get_collision_box(), 5);
-  
-  if (dmg > 0) {
-    particles.preset_sparks_area(rover.get_collision_box(), 10);
-    battery.spend_energy(dmg);
-    imageset.freeze_frames = 5;
-    window.navigator.vibrate(50);
-    imageset.shaking = 10;   
-  }
+  particles.preset_sparks_area(rover.get_collision_box(), 10);
+  battery.spend_energy(dmg);
+  imageset.freeze_frames = 5;
+  window.navigator.vibrate(50);
+  imageset.shaking = 10;   
 }
 
 rover.check_death = function() {
