@@ -57,6 +57,7 @@ function gamestate_render() {
       rover.render();      
       pickups.render();
       particles.render();
+      lighting.render();
       battery.render();
       minimap.render();
       touchbuttons.render();
@@ -67,7 +68,9 @@ function gamestate_render() {
       labyrinth.draw_room();
       rover.dead_render();
       bots.render();
+      pickups.render();
       particles.render();
+      lighting.render();
       battery.render();
       minimap.render();
       

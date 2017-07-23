@@ -78,6 +78,7 @@ function init_all() {
   pickups.init();
   bots.init();
   labyrinth.init();
+  lighting.init();
   powerups.init();
   rover.init();  
   particles.init();
@@ -96,6 +97,7 @@ function reset_game() {
   pickups.init();
   bots.init();
   labyrinth.init();
+  lighting.init();
   powerups.init();
   rover.init();
   touchbuttons.init();

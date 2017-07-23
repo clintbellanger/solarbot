@@ -406,7 +406,7 @@ rover.check_bots = function() {
   var touching = collision.rover_vs_bots(cbox);
 
   // allow bouncing off robots if we are falling  
-  var can_bounce = rover.speed_y > (0.0 + rover.gravity_acceleration);
+  var can_bounce = rover.speed_y >= (0.0 + rover.gravity_acceleration);
   for (var i=0; i<touching.length; i++) {
     if (bots.metadata[bots.state[touching[i]].type].hazardous_top) {
       can_bounce = false;
