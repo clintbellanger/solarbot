@@ -17,9 +17,12 @@ particles.init = function() {
   particles.SPARK = 1;
   particles.WHEEL = 2;
   particles.SMOKE = 3;
+  particles.SPARKLEA = 4;
+  particles.SPARKLEB = 5;
   
   particles.info[particles.SPARK] = new Object();
-  var spark = particles.info[particles.SPARK];  
+  var spark = particles.info[particles.SPARK];
+  spark.composite = "lighter";
   spark.size = 1;
   spark.half = 0;  
   spark.frame_count = 3;
@@ -33,6 +36,7 @@ particles.init = function() {
   
   particles.info[particles.WHEEL] = new Object();
   var wheel = particles.info[particles.WHEEL];  
+  wheel.composite = "source-over";
   wheel.size = 6;
   wheel.half = 3;
   wheel.frame_count = 8;
@@ -51,6 +55,7 @@ particles.init = function() {
   
   particles.info[particles.SMOKE] = new Object();
   var smoke = particles.info[particles.SMOKE];
+  smoke.composite = "source-over";
   smoke.size = 8;
   smoke.half = 4;
   smoke.frame_count = 8;
@@ -65,8 +70,40 @@ particles.init = function() {
   smoke.frame[4] = {x:32, y:12};
   smoke.frame[5] = {x:40, y:12};
   smoke.frame[6] = {x:48, y:12};
-  smoke.frame[7] = {x:56, y:12};         
+  smoke.frame[7] = {x:56, y:12};
   
+  particles.info[particles.SPARKLEA] = new Object();
+  var sparklea = particles.info[particles.SPARKLEA];
+  sparklea.composite = "lighter";
+  sparklea.size = 8;
+  sparklea.half = 4;
+  sparklea.frame_count = 5;
+  sparklea.frame_duration = 6;
+  sparklea.looping = false;
+  sparklea.gravity = -0.005; // float up
+  sparklea.frame = [];
+  sparklea.frame[0] = {x:0, y:20};
+  sparklea.frame[1] = {x:8, y:20};
+  sparklea.frame[2] = {x:16, y:20};
+  sparklea.frame[3] = {x:24, y:20};
+  sparklea.frame[4] = {x:32, y:20};
+  
+  particles.info[particles.SPARKLEB] = new Object();
+  var sparkleb = particles.info[particles.SPARKLEB];
+  sparkleb.composite = "lighter";
+  sparkleb.size = 8;
+  sparkleb.half = 4;
+  sparkleb.frame_count = 5;
+  sparkleb.frame_duration = 8;
+  sparkleb.looping = false;
+  sparkleb.gravity = -0.005; // float up
+  sparkleb.frame = [];
+  sparkleb.frame[0] = {x:0, y:28};
+  sparkleb.frame[1] = {x:8, y:28};
+  sparkleb.frame[2] = {x:16, y:28};
+  sparkleb.frame[3] = {x:24, y:28};
+  sparkleb.frame[4] = {x:32, y:28};
+    
 }
 
 particles.reset = function() {
@@ -161,9 +198,15 @@ particles.below_view = function(pid) {
 }
 
 particles.render = function() {
-  // test option - glowing particles
-  //ctx.globalCompositeOperation = "lighter";
+
   for (var i=particles.plist.length-1; i>=0; i--) {
+  
+    // Not sure if this is a good idea: particles are supposed to be done in bulk
+    // with as little extra calculation or lookup each particle as possible.    
+    //if (composite != particles.info[particles.plist[i].type].composite) {
+    //  ctx.globalCompositeOperation = particles.info[particles.plist[i].type].composite;
+    //}
+        
     particles.render_single(i);
   }
   //ctx.globalCompositeOperation = "source-over";
@@ -178,7 +221,7 @@ particles.render_single = function(pid) {
     particles.img,
     info.frame[f].x, info.frame[f].y,
     info.size, info.size,
-      Math.floor(p.x) - info.half,
+    Math.floor(p.x) - info.half,
     Math.floor(p.y) - info.half
   );
 }
@@ -269,4 +312,26 @@ particles.preset_smoke_drill_right = function(x, y) {
   var dx = random_between(-0.5, 0);
   var dy = random_between(-0.5, 0);
   particles.add(particles.SMOKE,x,y,dx,dy);
+}
+
+particles.preset_sparkles_area = function(bounding_box, number_of_particles) {  
+
+  var x, y, dx, dy;
+  
+  for (var i=0; i<number_of_particles/2; i++) {  
+    x = random_between(bounding_box.x, bounding_box.x + bounding_box.w);
+    y = random_between(bounding_box.y, bounding_box.y + bounding_box.h);
+    dx = 0;
+    dy = random_between(-0.6, -0.2);
+    particles.add(particles.SPARKLEA,x,y,dx,dy);
+  }
+
+  for (var j=0; j<number_of_particles/2; j++) {  
+    x = random_between(bounding_box.x, bounding_box.x + bounding_box.w);
+    y = random_between(bounding_box.y, bounding_box.y + bounding_box.h);
+    dx = 0;
+    dy = random_between(-1.0, -0.5);
+    particles.add(particles.SPARKLEB,x,y,dx,dy);
+  }
+  
 }

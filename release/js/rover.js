@@ -95,7 +95,10 @@ rover.init = function() {
   rover.invulnerable_frames = 0;
   rover.invulnerable_length = 45;
   rover.died = false;
-  
+
+  // after recharging from sunlight, cannot recharge again for a moment
+  rover.recharge_frames = 0;
+  rover.recharge_delay = 60;
 }
 
 rover.new_map_spawn = function() {
@@ -149,7 +152,33 @@ rover.logic = function() {
   // temporary statuses
   if (rover.invulnerable_frames > 0) rover.invulnerable_frames--;
   
+  // rover can recharge from light sources  
+  rover.check_recharge();
+  
   rover.check_death();
+  
+  
+}
+
+rover.check_recharge = function() {
+
+  // if recently recharged, wait
+  if (rover.recharge_frames > 0) {
+    rover.recharge_frames--;
+    return;
+  }
+  
+  var cbox = rover.get_collision_box();
+  var room = {x:labyrinth.current_room_x, y:labyrinth.current_room_y};
+  
+  if (lighting.touching_light(room, cbox)) {
+
+    battery.gain_energy(1);
+    rover.recharge_frames = rover.recharge_delay;
+    
+    particles.preset_sparkles_area(cbox, 7);
+    
+  }
 }
 
 /**

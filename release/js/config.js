@@ -2,8 +2,8 @@
  Various config options to help deployment to different platforms.
  */
 
-var VIEW_WIDTH = 128;
-var VIEW_HEIGHT = 128;
+const VIEW_WIDTH = 128;
+const VIEW_HEIGHT = 128;
  
 // The art has been prescaled by this factor.
 // PRESCALE 1 means the default 160x120 assets are used in the image folder.
