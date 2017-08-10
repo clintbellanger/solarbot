@@ -56,13 +56,29 @@ bots.load_metadata = function() {
   tank.frames[bots.directions.RIGHT] = [{x:62, y:2},{x:82, y:2},{x:102, y:2}];
   tank.collision_margin = {top:2, bottom:1, left:1, right:1};  
   tank.base_anim = [];
-  tank.base_anim[bots.directions.LEFT] = Animation(0, 0.3, 3, true);
-  tank.base_anim[bots.directions.RIGHT] = Animation(0, 0.3, 3, true);
+  tank.base_anim[bots.directions.LEFT] = Animation(0, 0.3, 3, true, 1.0);
+  tank.base_anim[bots.directions.RIGHT] = Animation(0, 0.3, 3, true, 1.0);
   tank.max_speed = [];
   tank.max_speed[bots.directions.LEFT] = -0.5;
   tank.max_speed[bots.directions.RIGHT] = 0.5;
   tank.on_ground = true;
   tank.hazardous_top = false;
+  
+  // PISTON
+  bots.metadata[bots.types.PISTON] = {};
+  var piston = bots.metadata[bots.types.PISTON];
+  piston.frames = [];
+  piston.frames[bots.directions.LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
+  piston.frames[bots.directions.RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];
+  piston.collision_margin = {top:2, bottom:1, left:1, right:1};  
+  piston.base_anim = [];
+  piston.base_anim[bots.directions.LEFT] = Animation(0, 0.2, 3, true, 1.0);
+  piston.base_anim[bots.directions.RIGHT] = Animation(0, 0.2, 3, true, 1.0);
+  piston.max_speed = [];
+  piston.max_speed[bots.directions.LEFT] = -0.3;
+  piston.max_speed[bots.directions.RIGHT] = 0.3;
+  piston.on_ground = true;
+  piston.hazardous_top = false;  
 
   // UFO
   bots.metadata[bots.types.UFO] = {};
@@ -72,8 +88,8 @@ bots.load_metadata = function() {
   ufo.frames[bots.directions.RIGHT] = [{x:102, y:62},{x:122, y:62},{x:142, y:62},{x:162, y:62},{x:182, y:62}];
   ufo.collision_margin = {top:1, bottom:3, left:1, right:1};  
   ufo.base_anim = [];
-  ufo.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true);
-  ufo.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true);
+  ufo.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true, 1.0);
+  ufo.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
   ufo.max_speed = [];
   ufo.max_speed[bots.directions.LEFT] = -1;
   ufo.max_speed[bots.directions.RIGHT] = 1;
@@ -88,8 +104,8 @@ bots.load_metadata = function() {
   drone.frames[bots.directions.RIGHT] = [{x:102, y:42},{x:122, y:42},{x:142, y:42},{x:162, y:42},{x:182, y:42}];
   drone.collision_margin = {top:1, bottom:3, left:1, right:1};  
   drone.base_anim = [];
-  drone.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true);
-  drone.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true);
+  drone.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true, 1.0);
+  drone.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
   drone.max_speed = [];
   drone.max_speed[bots.directions.LEFT] = -0.5;
   drone.max_speed[bots.directions.RIGHT] = 0.5;
@@ -184,6 +200,10 @@ bots.logic = function() {
       case bots.types.TANK:
         bots.logic_tank(i);
         break;
+        
+      case bots.types.PISTON:
+        bots.logic_piston(i);
+        break;
 		
       case bots.types.UFO:
 	    bots.logic_ufo(i);
@@ -267,6 +287,49 @@ bots.logic_tank = function(bot_id) {
   tank.x += tank.speed;
 }
 
+
+// pistons patrol left/right on the current platform
+// and speed up if they are in line of sight with the rover
+bots.logic_piston = function(bot_id) {
+  
+  var piston = bots.state[bot_id];
+  var meta = bots.metadata[piston.type];
+  var cbox = bots.collision[bot_id];
+  
+  // movement and position calculations
+  var wall_ahead = collision.collideX(cbox, piston.speed);
+  var hole_below = collision.holeCheck(cbox);
+  var edge_ahead = collision.screenEdgeX(cbox, piston.speed);  
+  
+  // let's reuse cbox to check horizontal vision
+  if (piston.facing == bots.directions.LEFT) {
+    cbox.w += cbox.x; // stretch this collision box
+    cbox.x = 0; // to the left edge
+  }
+  else if (piston.facing == bots.directions.RIGHT) {
+    cbox.w = (VIEW_WIDTH - cbox.x); // stretch to right edge
+  }
+  
+  rbox = rover.get_collision_box();  
+  if (collision.rectsOverlap(cbox, rbox)) {
+    piston.speed = meta.max_speed[piston.facing] * 3;
+    piston.anim.multiply = 2.0;
+  }
+  else {
+    piston.speed = meta.max_speed[piston.facing];
+    piston.anim.multiply = 1.0;
+  }
+
+  if (wall_ahead || hole_below || edge_ahead) {
+    piston.speed *= -1; // turn around
+	if (piston.speed < 0) piston.facing = bots.directions.LEFT;
+	else piston.facing = bots.directions.RIGHT;
+  }
+  
+  piston.x += piston.speed;
+}
+
+
 // ufos patrol left/right in mid air
 bots.logic_ufo = function(bot_id) {
 
@@ -275,7 +338,7 @@ bots.logic_ufo = function(bot_id) {
   
   // movement and position calculations
   var wall_ahead = collision.collideX(cbox, ufo.speed);
-  var edge_ahead = collision.screenEdgeX(cbox, ufo.speed);  
+  var edge_ahead = collision.screenEdgeX(cbox, ufo.speed);
 
   if (wall_ahead || edge_ahead) {
     ufo.speed *= -1; // turn around

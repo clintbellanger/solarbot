@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="16" tileheight="16" backgroundcolor="#222034" nextobjectid="41">
- <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="32" columns="4">
-  <image source="../../release/images/tileset_gutters.png" width="80" height="160"/>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="16" tileheight="16" backgroundcolor="#222034" nextobjectid="53">
+ <tileset firstgid="1" name="tileset_industrial" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="48" columns="4">
+  <image source="../../release/images/tileset_gutters.png" width="80" height="240"/>
  </tileset>
- <tileset firstgid="33" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
+ <tileset firstgid="49" name="items" tilewidth="16" tileheight="16" tilecount="6" columns="1">
   <image source="items.png" width="16" height="96"/>
  </tileset>
- <tileset firstgid="39" name="bots" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="16" columns="2">
+ <tileset firstgid="55" name="bots" tilewidth="16" tileheight="16" spacing="4" margin="2" tilecount="16" columns="2">
   <image source="bots.png" width="40" height="160"/>
  </tileset>
  <layer name="tiles" width="64" height="32">
@@ -46,28 +46,29 @@
 </data>
  </layer>
  <objectgroup name="items">
-  <object id="2" gid="34" x="16" y="240" width="16" height="16"/>
-  <object id="7" gid="35" x="208" y="240" width="16" height="16"/>
-  <object id="9" gid="33" x="480" y="240" width="16" height="16"/>
-  <object id="10" gid="33" x="48" y="368" width="16" height="16"/>
-  <object id="12" gid="37" x="288" y="304" width="16" height="16"/>
-  <object id="14" gid="33" x="992" y="448" width="16" height="16"/>
-  <object id="17" gid="38" x="672" y="464" width="16" height="16"/>
-  <object id="18" gid="36" x="672" y="224" width="16" height="16"/>
+  <object id="2" gid="50" x="16" y="240" width="16" height="16"/>
+  <object id="7" gid="51" x="208" y="240" width="16" height="16"/>
+  <object id="9" gid="49" x="480" y="240" width="16" height="16"/>
+  <object id="10" gid="49" x="48" y="368" width="16" height="16"/>
+  <object id="12" gid="53" x="288" y="304" width="16" height="16"/>
+  <object id="14" gid="49" x="992" y="448" width="16" height="16"/>
+  <object id="17" gid="54" x="672" y="464" width="16" height="16"/>
+  <object id="18" gid="52" x="672" y="224" width="16" height="16"/>
  </objectgroup>
  <objectgroup name="bots">
-  <object id="22" gid="42" x="176" y="240" width="16" height="16"/>
-  <object id="25" gid="40" x="64" y="176" width="16" height="16"/>
-  <object id="27" gid="45" x="416" y="176" width="16" height="16"/>
-  <object id="30" gid="48" x="560" y="224" width="16" height="16"/>
-  <object id="31" gid="45" x="432" y="288" width="16" height="16"/>
-  <object id="32" gid="46" x="448" y="320" width="16" height="16"/>
-  <object id="33" gid="47" x="192" y="336" width="16" height="16"/>
-  <object id="34" gid="42" x="560" y="368" width="16" height="16"/>
-  <object id="35" gid="45" x="720" y="304" width="16" height="16"/>
-  <object id="36" gid="47" x="992" y="320" width="16" height="16"/>
-  <object id="38" gid="48" x="912" y="464" width="16" height="16"/>
-  <object id="39" gid="46" x="848" y="192" width="16" height="16"/>
-  <object id="40" gid="47" x="832" y="288" width="16" height="16"/>
+  <object id="22" gid="58" x="176" y="240" width="16" height="16"/>
+  <object id="25" gid="56" x="64" y="176" width="16" height="16"/>
+  <object id="27" gid="61" x="416" y="176" width="16" height="16"/>
+  <object id="30" gid="64" x="560" y="224" width="16" height="16"/>
+  <object id="31" gid="61" x="432" y="288" width="16" height="16"/>
+  <object id="32" gid="62" x="448" y="320" width="16" height="16"/>
+  <object id="33" gid="63" x="192" y="336" width="16" height="16"/>
+  <object id="35" gid="61" x="720" y="304" width="16" height="16"/>
+  <object id="36" gid="63" x="992" y="320" width="16" height="16"/>
+  <object id="38" gid="64" x="912" y="464" width="16" height="16"/>
+  <object id="39" gid="62" x="848" y="192" width="16" height="16"/>
+  <object id="40" gid="63" x="832" y="288" width="16" height="16"/>
+  <object id="46" gid="59" x="336" y="192" width="16" height="16"/>
+  <object id="51" gid="60" x="544" y="368" width="16" height="16"/>
  </objectgroup>
 </map>
