@@ -96,7 +96,7 @@ tiled.load_bots = function(map_obj) {
     // convert to bot type and facing
     // look at the tiled bots.png tileset to see what this is doing    
     bot_type = Math.floor(bot_gid/2); // see bots.types. Rover = 0, etc.
-    bot_facing = (bot_gid%2); // see bots.directions. left, right
+    bot_facing = (bot_gid%2); // able to spawn state 0 and state 1 of bots e.g. LEFT and RIGHT
     
     if (bot_type == bots.types.SENTRY) {
        bot_facing += 2; // up/down instead of left/right

@@ -20,12 +20,6 @@ bots.init = function() {
   bots.types.UFO = 4;    // orange bot with gears in middle, flies left/right
   bots.types.SENTRY = 5; // red bot with spike, flies up/down on rover proximity  
   
-  bots.directions = {};
-  bots.directions.LEFT = 0;
-  bots.directions.RIGHT = 1;
-  bots.directions.UP = 2;
-  bots.directions.DOWN = 3;
-  
   bots.metadata = []; // index is bots.types
   // values that are static metadata, e.g. frame info. varying by bot type    
   
@@ -51,89 +45,100 @@ bots.load_metadata = function() {
   // TANK
   bots.metadata[bots.types.TANK] = {};
   var tank = bots.metadata[bots.types.TANK];
+  tank.states = {};
+  tank.states.LEFT = 0;
+  tank.states.RIGHT = 1;
   tank.frames = [];
-  tank.frames[bots.directions.LEFT] = [{x:2, y:2},{x:22, y:2},{x:42, y:2}];
-  tank.frames[bots.directions.RIGHT] = [{x:62, y:2},{x:82, y:2},{x:102, y:2}];
-  tank.collision_margin = {top:2, bottom:1, left:1, right:1};  
+  tank.frames[tank.states.LEFT] = [{x:2, y:2},{x:22, y:2},{x:42, y:2}];
+  tank.frames[tank.states.RIGHT] = [{x:62, y:2},{x:82, y:2},{x:102, y:2}];
   tank.base_anim = [];
-  tank.base_anim[bots.directions.LEFT] = Animation(0, 0.3, 3, true, 1.0);
-  tank.base_anim[bots.directions.RIGHT] = Animation(0, 0.3, 3, true, 1.0);
+  tank.base_anim[tank.states.LEFT] = Animation(0, 0.3, 3, true, 1.0);
+  tank.base_anim[tank.states.RIGHT] = Animation(0, 0.3, 3, true, 1.0);  
   tank.max_speed = [];
-  tank.max_speed[bots.directions.LEFT] = -0.5;
-  tank.max_speed[bots.directions.RIGHT] = 0.5;
+  tank.max_speed[tank.states.LEFT] = -0.5;
+  tank.max_speed[tank.states.RIGHT] = 0.5;
+  tank.collision_margin = {top:2, bottom:1, left:1, right:1};
   tank.on_ground = true;
   tank.hazardous_top = false;
   
   // PISTON
   bots.metadata[bots.types.PISTON] = {};
   var piston = bots.metadata[bots.types.PISTON];
+  piston.states = {};
+  piston.states.LEFT = 0;
+  piston.states.RIGHT = 1;
+  piston.states.CHARGE_LEFT = 2;
+  piston.states.CHARGE_RIGHT = 3;
   piston.frames = [];
-  piston.frames[bots.directions.LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
-  piston.frames[bots.directions.RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];
-  piston.collision_margin = {top:2, bottom:1, left:1, right:1};  
+  piston.frames[piston.states.LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
+  piston.frames[piston.states.RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];
+  piston.frames[piston.states.CHARGE_LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
+  piston.frames[piston.states.CHARGE_RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];    
   piston.base_anim = [];
-  piston.base_anim[bots.directions.LEFT] = Animation(0, 0.2, 3, true, 1.0);
-  piston.base_anim[bots.directions.RIGHT] = Animation(0, 0.2, 3, true, 1.0);
+  piston.base_anim[piston.states.LEFT] = Animation(0, 0.2, 3, true, 1.0);
+  piston.base_anim[piston.states.RIGHT] = Animation(0, 0.2, 3, true, 1.0);
+  piston.base_anim[piston.states.CHARGE_LEFT] = Animation(0, 0.2, 3, true, 2.0);
+  piston.base_anim[piston.states.CHARGE_RIGHT] = Animation(0, 0.2, 3, true, 2.0);  
   piston.max_speed = [];
-  piston.max_speed[bots.directions.LEFT] = -0.3;
-  piston.max_speed[bots.directions.RIGHT] = 0.3;
+  piston.max_speed[piston.states.LEFT] = -0.3;
+  piston.max_speed[piston.states.RIGHT] = 0.3;
+  piston.max_speed[piston.states.CHARGE_LEFT] = -0.9;
+  piston.max_speed[piston.states.CHARGE_RIGHT] = 0.9;  
+  piston.collision_margin = {top:2, bottom:1, left:1, right:1};  
   piston.on_ground = true;
   piston.hazardous_top = false;  
 
   // UFO
   bots.metadata[bots.types.UFO] = {};
   var ufo = bots.metadata[bots.types.UFO];
+  ufo.states = {};
+  ufo.states.LEFT = 0;
+  ufo.states.RIGHT = 1;
   ufo.frames = [];
-  ufo.frames[bots.directions.LEFT] = [{x:2, y:62},{x:22, y:62},{x:42, y:62},{x:62, y:62},{x:82, y:62}];
-  ufo.frames[bots.directions.RIGHT] = [{x:102, y:62},{x:122, y:62},{x:142, y:62},{x:162, y:62},{x:182, y:62}];
-  ufo.collision_margin = {top:1, bottom:3, left:1, right:1};  
+  ufo.frames[ufo.states.LEFT] = [{x:2, y:62},{x:22, y:62},{x:42, y:62},{x:62, y:62},{x:82, y:62}];
+  ufo.frames[ufo.states.RIGHT] = [{x:102, y:62},{x:122, y:62},{x:142, y:62},{x:162, y:62},{x:182, y:62}];  
   ufo.base_anim = [];
-  ufo.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true, 1.0);
-  ufo.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
+  ufo.base_anim[ufo.states.LEFT] = Animation(0, 0.5, 5, true, 1.0);
+  ufo.base_anim[ufo.states.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
   ufo.max_speed = [];
-  ufo.max_speed[bots.directions.LEFT] = -1;
-  ufo.max_speed[bots.directions.RIGHT] = 1;
+  ufo.max_speed[ufo.states.LEFT] = -1;
+  ufo.max_speed[ufo.states.RIGHT] = 1;
+  ufo.collision_margin = {top:1, bottom:3, left:1, right:1};    
   ufo.on_ground = false;
   ufo.hazardous_top = false;
   
   // DRONE
   bots.metadata[bots.types.DRONE] = {};
   var drone = bots.metadata[bots.types.DRONE];
+  drone.states = {};
+  drone.states.LEFT = 0;
+  drone.states.RIGHT = 1;
   drone.frames = [];
-  drone.frames[bots.directions.LEFT] = [{x:2, y:42},{x:22, y:42},{x:42, y:42},{x:62, y:42},{x:82, y:42}];
-  drone.frames[bots.directions.RIGHT] = [{x:102, y:42},{x:122, y:42},{x:142, y:42},{x:162, y:42},{x:182, y:42}];
-  drone.collision_margin = {top:1, bottom:3, left:1, right:1};  
+  drone.frames[drone.states.LEFT] = [{x:2, y:42},{x:22, y:42},{x:42, y:42},{x:62, y:42},{x:82, y:42}];
+  drone.frames[drone.states.RIGHT] = [{x:102, y:42},{x:122, y:42},{x:142, y:42},{x:162, y:42},{x:182, y:42}];  
   drone.base_anim = [];
-  drone.base_anim[bots.directions.LEFT] = Animation(0, 0.5, 5, true, 1.0);
-  drone.base_anim[bots.directions.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
+  drone.base_anim[drone.states.LEFT] = Animation(0, 0.5, 5, true, 1.0);
+  drone.base_anim[drone.states.RIGHT] = Animation(0, 0.5, 5, true, 1.0);
   drone.max_speed = [];
-  drone.max_speed[bots.directions.LEFT] = -0.5;
-  drone.max_speed[bots.directions.RIGHT] = 0.5;
+  drone.max_speed[drone.states.LEFT] = -0.5;
+  drone.max_speed[drone.states.RIGHT] = 0.5;
+  drone.collision_margin = {top:1, bottom:3, left:1, right:1};  
   drone.on_ground = false;
   drone.hazardous_top = true;
   
-}
-
-/*
-bots.init_spawns = function() {
-
-  bots.spawns[0] = {type:bots.types.TANK, room_x:1, room_y:0, tile_x:3, tile_y:6, facing:bots.directions.RIGHT};
-  bots.spawns[1] = {type:bots.types.TANK, room_x:3, room_y:0, tile_x:5, tile_y:4, facing:bots.directions.LEFT};
-  bots.spawns[2] = {type:bots.types.UFO, room_x:3, room_y:0, tile_x:5, tile_y:3, facing:bots.directions.RIGHT};
-  bots.spawns[3] = {type:bots.types.DRONE, room_x:2, room_y:0, tile_x:3, tile_y:5, facing:bots.directions.LEFT};
-  bots.spawns[4] = {type:bots.types.DRONE, room_x:3, room_y:1, tile_x:3, tile_y:5, facing:bots.directions.RIGHT};
-  bots.spawns[5] = {type:bots.types.UFO, room_x:1, room_y:1, tile_x:3, tile_y:4, facing:bots.directions.RIGHT};
+  // SENTRY
+  bots.metadata[bots.types.SENTRY] = {};
+  var sentry = bots.metadata[bots.types.SENTRY];
   
 }
-*/
 
 // set up spawn point for a specific bot
-bots.add_spawn = function(bot_type, room_x, room_y, tile_x, tile_y, facing) {
-  bots.spawns.push({type:bot_type, room_x:room_x, room_y:room_y, tile_x:tile_x, tile_y:tile_y, facing:facing}); 
+bots.add_spawn = function(bot_type, room_x, room_y, tile_x, tile_y, state) {
+  bots.spawns.push({type:bot_type, room_x:room_x, room_y:room_y, tile_x:tile_x, tile_y:tile_y, state:state}); 
 }
 
 // place bot into current room
-bots.add = function(bot_type, grid_x, grid_y, facing) {
+bots.add = function(bot_type, grid_x, grid_y, state) {
   
   var bot_id = bots.count;
   bots.count++;
@@ -143,13 +148,13 @@ bots.add = function(bot_type, grid_x, grid_y, facing) {
   var meta = bots.metadata[bot_type];
   
   newbot.type = bot_type;
-  newbot.facing = facing;
+  newbot.state = state;
   newbot.x = grid_x * tileset.tile_size;
   newbot.y = grid_y * tileset.tile_size;
   if (meta.on_ground) newbot.y += meta.collision_margin.bottom; // if a ground bot, shift down for collision box to rest on floor
   
-  newbot.anim = animate.copy_anim(meta.base_anim[facing]);
-  newbot.speed = meta.max_speed[facing];  
+  newbot.anim = animate.copy_anim(meta.base_anim[state]);
+  newbot.speed = meta.max_speed[state];  
     
   bots.sprite[bot_id] = {};  
   bots.set_collision(bot_id);  
@@ -166,7 +171,7 @@ bots.load_room = function(room_x, room_y) {
 	
     // is this bot in this room?
     if (room_x == spawn.room_x && room_y == spawn.room_y) {
-      bots.add(spawn.type, spawn.tile_x, spawn.tile_y, spawn.facing);
+      bots.add(spawn.type, spawn.tile_x, spawn.tile_y, spawn.state);
     }
   }
 }
@@ -259,8 +264,8 @@ bots.set_sprite = function(bot_id) {
   
   animate.advance(onebot.anim);
   var display_frame = Math.floor(onebot.anim.frame);  
-  sprite.src_x = meta.frames[onebot.facing][display_frame].x;
-  sprite.src_y = meta.frames[onebot.facing][display_frame].y;
+  sprite.src_x = meta.frames[onebot.state][display_frame].x;
+  sprite.src_y = meta.frames[onebot.state][display_frame].y;
 
 }
 
@@ -272,6 +277,7 @@ bots.logic_tank = function(bot_id) {
   
   var tank = bots.state[bot_id];
   var cbox = bots.collision[bot_id];
+  var meta = bots.metadata[tank.type];
   
   // movement and position calculations
   var wall_ahead = collision.collideX(cbox, tank.speed);
@@ -280,8 +286,8 @@ bots.logic_tank = function(bot_id) {
 
   if (wall_ahead || hole_below || edge_ahead) {
     tank.speed *= -1; // turn around
-	if (tank.speed < 0) tank.facing = bots.directions.LEFT;
-	else tank.facing = bots.directions.RIGHT;
+	if (tank.speed < 0) tank.state = meta.states.LEFT;
+	else tank.state = meta.states.RIGHT;
   }
   
   tank.x += tank.speed;
@@ -302,28 +308,28 @@ bots.logic_piston = function(bot_id) {
   var edge_ahead = collision.screenEdgeX(cbox, piston.speed);  
   
   // let's reuse cbox to check horizontal vision
-  if (piston.facing == bots.directions.LEFT) {
+  if (piston.state == meta.states.LEFT) {
     cbox.w += cbox.x; // stretch this collision box
     cbox.x = 0; // to the left edge
   }
-  else if (piston.facing == bots.directions.RIGHT) {
+  else if (piston.state == meta.states.RIGHT) {
     cbox.w = (VIEW_WIDTH - cbox.x); // stretch to right edge
   }
   
   rbox = rover.get_collision_box();  
   if (collision.rectsOverlap(cbox, rbox)) {
-    piston.speed = meta.max_speed[piston.facing] * 3;
+    piston.speed = meta.max_speed[piston.state] * 3;
     piston.anim.multiply = 2.0;
   }
   else {
-    piston.speed = meta.max_speed[piston.facing];
+    piston.speed = meta.max_speed[piston.state];
     piston.anim.multiply = 1.0;
   }
 
   if (wall_ahead || hole_below || edge_ahead) {
     piston.speed *= -1; // turn around
-	if (piston.speed < 0) piston.facing = bots.directions.LEFT;
-	else piston.facing = bots.directions.RIGHT;
+	if (piston.speed < 0) piston.state = meta.states.LEFT;
+	else piston.state = meta.states.RIGHT;
   }
   
   piston.x += piston.speed;
@@ -334,6 +340,7 @@ bots.logic_piston = function(bot_id) {
 bots.logic_ufo = function(bot_id) {
 
   var ufo = bots.state[bot_id];
+  var meta = bots.metadata[ufo.type];
   var cbox = bots.collision[bot_id];
   
   // movement and position calculations
@@ -342,8 +349,8 @@ bots.logic_ufo = function(bot_id) {
 
   if (wall_ahead || edge_ahead) {
     ufo.speed *= -1; // turn around
-	if (ufo.speed < 0) ufo.facing = bots.directions.LEFT;
-	else ufo.facing = bots.directions.RIGHT;
+	if (ufo.speed < 0) ufo.state = meta.states.LEFT;
+	else ufo.state = meta.states.RIGHT;
   }
   
   ufo.x += ufo.speed;
@@ -355,7 +362,7 @@ bots.logic_ufo = function(bot_id) {
 bots.logic_drone = function(bot_id) {
 
   var drone = bots.state[bot_id];
-  var cbox = bots.collision[bot_id];
+  var cbox = bots.collision[bot_id];6
   
   // movement and position calculations
   var wall_ahead = collision.collideY(cbox, drone.speed);
