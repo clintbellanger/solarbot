@@ -52,7 +52,7 @@ collision.posToGrid = function(position) {
 
 
 /**
- * Are we over any ground right now?
+ * Are we partially over any ground right now?
  * checks under both bottom corners. 
  */
 collision.groundCheck = function(rect) {
@@ -68,7 +68,7 @@ collision.groundCheck = function(rect) {
 }
 
 /**
- * Are we over any hole right now?
+ * Are we partially over a hole right now?
  * checks under both bottom corners
  */
 collision.holeCheck = function(rect) {
@@ -83,6 +83,20 @@ collision.holeCheck = function(rect) {
   return false;
 }
 
+/**
+ * Are we over a hole at the left side (if moving left) or right side (if moving right)
+ */
+collision.holeAhead = function(rect, xspeed) {
+  var grid_y = collision.posToGrid(rect.y + rect.h);
+  var grid_x = collision.posToGrid(rect.x + (rect.w/2)); // center
+  if (xspeed < 0) grid_x = collision.posToGrid(rect.x); // left
+  if (xspeed > 0) grid_x = collision.posToGrid(rect.x + rect.w -1); // right
+  
+  if (!collision.tileHasCollision(grid_x, grid_y)) {
+    return true;
+  }
+  return false;
+}
 
 collision.collideLeft = function(rect, speed_x) {
   var grid_x = collision.posToGrid(rect.x + speed_x);

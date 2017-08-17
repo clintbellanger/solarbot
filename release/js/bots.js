@@ -72,8 +72,8 @@ bots.load_metadata = function() {
   piston.frames = [];
   piston.frames[piston.states.LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
   piston.frames[piston.states.RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];
-  piston.frames[piston.states.CHARGE_LEFT] = [{x:2, y:22},{x:22, y:22},{x:42, y:22}];
-  piston.frames[piston.states.CHARGE_RIGHT] = [{x:62, y:22},{x:82, y:22},{x:102, y:22}];    
+  piston.frames[piston.states.CHARGE_LEFT] = [{x:122, y:22},{x:142, y:22},{x:162, y:22}];
+  piston.frames[piston.states.CHARGE_RIGHT] = [{x:182, y:22},{x:202, y:22},{x:222, y:22}];    
   piston.base_anim = [];
   piston.base_anim[piston.states.LEFT] = Animation(0, 0.2, 3, true, 1.0);
   piston.base_anim[piston.states.RIGHT] = Animation(0, 0.2, 3, true, 1.0);
@@ -159,6 +159,15 @@ bots.add = function(bot_type, grid_x, grid_y, state) {
   bots.sprite[bot_id] = {};  
   bots.set_collision(bot_id);  
 
+}
+
+bots.init_state = function(bot_id, state_id) {
+  var onebot = bots.state[bot_id];
+  onebot.state = state_id;
+  var meta = bots.metadata[onebot.type];
+  var anim = meta.base_anim[state_id];
+  onebot.anim = animate.copy_anim(anim);
+  onebot.speed = meta.max_speed[state_id];
 }
 
 bots.load_room = function(room_x, room_y) {
@@ -269,7 +278,6 @@ bots.set_sprite = function(bot_id) {
 
 }
 
-
 /**** bot AI by type ****/
 
 // tanks patrol left/right on the current platform
@@ -281,13 +289,18 @@ bots.logic_tank = function(bot_id) {
   
   // movement and position calculations
   var wall_ahead = collision.collideX(cbox, tank.speed);
-  var hole_below = collision.holeCheck(cbox);
+  var hole_ahead = collision.holeAhead(cbox, tank.speed);
   var edge_ahead = collision.screenEdgeX(cbox, tank.speed);  
 
-  if (wall_ahead || hole_below || edge_ahead) {
-    tank.speed *= -1; // turn around
-	if (tank.speed < 0) tank.state = meta.states.LEFT;
-	else tank.state = meta.states.RIGHT;
+  if (wall_ahead || hole_ahead || edge_ahead) {
+    
+    // turn around
+    if (tank.state == meta.states.LEFT) {
+      bots.init_state(bot_id, meta.states.RIGHT);
+    }
+    else if (tank.state == meta.states.RIGHT) {
+      bots.init_state(bot_id, meta.states.LEFT);
+    }
   }
   
   tank.x += tank.speed;
@@ -302,35 +315,46 @@ bots.logic_piston = function(bot_id) {
   var meta = bots.metadata[piston.type];
   var cbox = bots.collision[bot_id];
   
-  // movement and position calculations
-  var wall_ahead = collision.collideX(cbox, piston.speed);
-  var hole_below = collision.holeCheck(cbox);
-  var edge_ahead = collision.screenEdgeX(cbox, piston.speed);  
-  
-  // let's reuse cbox to check horizontal vision
+  // Handle seeing the rover and speeding up
+  var viewbox = {x: cbox.x, y: cbox.y, w: cbox.w, h: cbox.h};
+  // look for the rover if going slow
   if (piston.state == meta.states.LEFT) {
-    cbox.w += cbox.x; // stretch this collision box
-    cbox.x = 0; // to the left edge
+    viewbox.w += viewbox.x; // stretch this collision box
+    viewbox.x = 0; // to the left edge
   }
   else if (piston.state == meta.states.RIGHT) {
-    cbox.w = (VIEW_WIDTH - cbox.x); // stretch to right edge
+    viewbox.w = (VIEW_WIDTH - viewbox.x); // stretch to right edge
   }
   
-  rbox = rover.get_collision_box();  
-  if (collision.rectsOverlap(cbox, rbox)) {
-    piston.speed = meta.max_speed[piston.state] * 3;
-    piston.anim.multiply = 2.0;
+  rbox = rover.get_collision_box();
+  if (collision.rectsOverlap(viewbox, rbox)) {
+  
+    // rover was spotted. increase speed!
+    if (piston.state == meta.states.RIGHT) {
+      bots.init_state(bot_id, meta.states.CHARGE_RIGHT);
+    }
+    else if (piston.state == meta.states.LEFT) {
+      bots.init_state(bot_id, meta.states.CHARGE_LEFT);
+    }    
   }
-  else {
-    piston.speed = meta.max_speed[piston.state];
-    piston.anim.multiply = 1.0;
+  
+  // movement and position calculations
+  var wall_ahead = collision.collideX(cbox, piston.speed);  
+  var edge_ahead = collision.screenEdgeX(cbox, piston.speed);
+  var hole_ahead = collision.holeAhead(cbox, piston.speed);
+  
+  // turn around if we run out of floor
+  if (wall_ahead || edge_ahead || hole_ahead) {
+    
+    if (piston.state == meta.states.LEFT || piston.state == meta.states.CHARGE_LEFT) {
+      bots.init_state(bot_id, meta.states.RIGHT);
+    }
+    else if (piston.state == meta.states.RIGHT || piston.state == meta.states.CHARGE_RIGHT) {
+      bots.init_state(bot_id, meta.states.LEFT);
+    }    
   }
-
-  if (wall_ahead || hole_below || edge_ahead) {
-    piston.speed *= -1; // turn around
-	if (piston.speed < 0) piston.state = meta.states.LEFT;
-	else piston.state = meta.states.RIGHT;
-  }
+  
+  // TODO: hole_below and going from fast to slow is causing the bot to be stuck always over some hole  
   
   piston.x += piston.speed;
 }
