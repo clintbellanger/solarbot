@@ -53,6 +53,7 @@ tileset.init = function() {
   tileset.info[22].collide = true;
   tileset.info[22].hazardous_bottom = true;
   tileset.info[22].breakable = true;
+  tileset.info[23].collide = true;
   
   // tile atlas positions
   // using bleed and gutters to help with scaling artifacts
