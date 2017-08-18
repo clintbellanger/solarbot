@@ -354,8 +354,6 @@ bots.logic_piston = function(bot_id) {
     }    
   }
   
-  // TODO: hole_below and going from fast to slow is causing the bot to be stuck always over some hole  
-  
   piston.x += piston.speed;
 }
 
@@ -386,7 +384,7 @@ bots.logic_ufo = function(bot_id) {
 bots.logic_drone = function(bot_id) {
 
   var drone = bots.state[bot_id];
-  var cbox = bots.collision[bot_id];6
+  var cbox = bots.collision[bot_id];
   
   // movement and position calculations
   var wall_ahead = collision.collideY(cbox, drone.speed);
