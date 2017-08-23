@@ -129,6 +129,24 @@ bots.load_metadata = function() {
   // SENTRY
   bots.metadata[bots.types.SENTRY] = {};
   var sentry = bots.metadata[bots.types.SENTRY];
+  sentry.states = {};
+  sentry.states.TOP = 0;
+  sentry.states.BOTTOM = 1;
+  sentry.states.MOVE_DOWN = 2;
+  sentry.states.MOVE_UP = 3;
+  sentry.states.LANDING_TOP = 4;
+  sentry.states.LANDING_BOTTOM = 5;
+  sentry.frames = [];
+  sentry.base_anim = [];
+  sentry.base_anim[sentry.states.TOP] = Animation(0, 0.5, 4, true);
+  sentry.base_anim[sentry.states.BOTTOM] = Animation(0, 0.5, 4, true);
+  sentry.base_anim[sentry.states.MOVE_DOWN] = Animation(0, 1, 3, false);
+  sentry.base_anim[sentry.states.MOVE_UP] = Animation(0, 1, 3, false);
+  sentry.base_anim[sentry.states.LANDING_TOP] = Animation(0, 1.5, 5, false);
+  sentry.base_anim[sentry.states.LANDING_BOTTOM] = Animation(0, 1.5, 5, false);
+  sentry.max_speed = [];
+  
+  
   
 }
 

@@ -7,15 +7,23 @@ var Animation = function(frame, speed, max, looping) {
 }
 
 animate.advance = function(anim) {
-  var new_frame = anim.frame + anim.speed;  
+  var new_frame = anim.frame + anim.speed;
   
-  if (anim.looping) {
-    if (anim.speed > 0) {
-      if (new_frame >= anim.max) new_frame -= anim.max;
+  if (new_frame >= anim.max && anim.speed > 0) {
+    if (anim.looping) {
+      new_frame -= anim.max; // restart the animation
+    }    
+    else {
+      new_frame = anim.max -1; // stay at last frame
     }
-    else if (anim.speed < 0) {
-	  if (new_frame < 0) new_frame += anim.max;
-	}
+  }
+  else if (new_frame < 0 && anim.speed < 0) {
+    if (anim.ooping) {
+      new_frame += anim.max // restart the animation      
+    }
+    else {
+      new_frame = 0; // stay at first frame
+    }
   }
   
   anim.frame = new_frame;
