@@ -14,11 +14,11 @@ animate.advance = function(anim) {
       new_frame -= anim.max; // restart the animation
     }    
     else {
-      new_frame = anim.max -1; // stay at last frame
+      new_frame = anim.max - anim.speed; // stay at last frame
     }
   }
   else if (new_frame < 0 && anim.speed < 0) {
-    if (anim.ooping) {
+    if (anim.looping) {
       new_frame += anim.max // restart the animation      
     }
     else {

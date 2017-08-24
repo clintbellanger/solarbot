@@ -98,10 +98,6 @@ tiled.load_bots = function(map_obj) {
     bot_type = Math.floor(bot_gid/2); // see bots.types. Rover = 0, etc.
     bot_facing = (bot_gid%2); // able to spawn state 0 and state 1 of bots e.g. LEFT and RIGHT
     
-    if (bot_type == bots.types.SENTRY) {
-       bot_facing += 2; // up/down instead of left/right
-    }
-    
     map_pos = tiled.convert_global_position(bot_data[i].x, bot_data[i].y);  
     
     if (bot_type == bots.types.ROVER) {

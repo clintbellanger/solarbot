@@ -130,23 +130,36 @@ bots.load_metadata = function() {
   bots.metadata[bots.types.SENTRY] = {};
   var sentry = bots.metadata[bots.types.SENTRY];
   sentry.states = {};
-  sentry.states.TOP = 0;
-  sentry.states.BOTTOM = 1;
+  sentry.states.BOTTOM = 0;
+  sentry.states.TOP = 1;
   sentry.states.MOVE_DOWN = 2;
   sentry.states.MOVE_UP = 3;
   sentry.states.LANDING_TOP = 4;
   sentry.states.LANDING_BOTTOM = 5;
   sentry.frames = [];
+  sentry.frames[sentry.states.TOP] = [{x:82,y:82}, {x:102,y:82}, {x:122,y:82}, {x:142,y:82}];
+  sentry.frames[sentry.states.BOTTOM] = [{x:2,y:82}, {x:22,y:82}, {x:42,y:82}, {x:62,y:82}];
+  sentry.frames[sentry.states.MOVE_DOWN] = [{x:2,y:122}, {x:22,y:122}, {x:42,y:122}];
+  sentry.frames[sentry.states.MOVE_UP] = [{x:2,y:102}, {x:22,y:102}, {x:42,y:102}];
+  sentry.frames[sentry.states.LANDING_TOP] = [{x:62,y:102}, {x:82,y:102}, {x:102,y:102}, {x:122,y:102}, {x:142,y:102}];
+  sentry.frames[sentry.states.LANDING_BOTTOM] = [{x:62,y:122}, {x:82,y:122}, {x:102,y:122}, {x:122,y:122}, {x:142,y:122}];    
   sentry.base_anim = [];
-  sentry.base_anim[sentry.states.TOP] = Animation(0, 0.5, 4, true);
-  sentry.base_anim[sentry.states.BOTTOM] = Animation(0, 0.5, 4, true);
-  sentry.base_anim[sentry.states.MOVE_DOWN] = Animation(0, 1, 3, false);
-  sentry.base_anim[sentry.states.MOVE_UP] = Animation(0, 1, 3, false);
-  sentry.base_anim[sentry.states.LANDING_TOP] = Animation(0, 1.5, 5, false);
-  sentry.base_anim[sentry.states.LANDING_BOTTOM] = Animation(0, 1.5, 5, false);
+  sentry.base_anim[sentry.states.TOP] = Animation(0, 0.1, 4, true);
+  sentry.base_anim[sentry.states.BOTTOM] = Animation(0, 0.1, 4, true);
+  sentry.base_anim[sentry.states.MOVE_DOWN] = Animation(0, 0.3, 3, false);
+  sentry.base_anim[sentry.states.MOVE_UP] = Animation(0, 0.3, 3, false);
+  sentry.base_anim[sentry.states.LANDING_TOP] = Animation(0, 0.2, 5, false);
+  sentry.base_anim[sentry.states.LANDING_BOTTOM] = Animation(0, 0.2, 5, false);
   sentry.max_speed = [];
-  
-  
+  sentry.max_speed[sentry.states.TOP] = 0;  
+  sentry.max_speed[sentry.states.BOTTOM] = 0;
+  sentry.max_speed[sentry.states.MOVING_DOWN] = 8.0;
+  sentry.max_speed[sentry.states.MOVING_UP] = -8.0;
+  sentry.max_speed[sentry.states.LANDING_TOP] = 0;
+  sentry.max_speed[sentry.states.LANDING_BOTTOM] = 0;
+  sentry.collision_margin = {top:1, bottom:1, left:4, right:4};  
+  sentry.on_ground = true;
+  sentry.hazardous_top = true;
   
 }
 
@@ -244,6 +257,10 @@ bots.logic = function() {
 	  case bots.types.DRONE:
 	    bots.logic_drone(i);
 		break;
+        
+      case bots.types.SENTRY:
+        bots.logic_sentry(i);
+        break;
     }
 	
 	bots.set_collision(i);
@@ -414,3 +431,82 @@ bots.logic_drone = function(bot_id) {
   
   drone.y += drone.speed;
 }
+
+// sentry bots have drillers on their tops and bottoms
+// if the rover enters proximity it will trigger
+bots.logic_sentry = function(bot_id) {
+
+  var sentry = bots.state[bot_id];
+  var cbox = bots.collision[bot_id];
+  var meta = bots.metadata[sentry.type];
+  var rbox = rover.get_collision_box();
+  var viewbox = {x:cbox.x, y:cbox.y, w:cbox.w, h:cbox.h};
+  
+  // make viewbox twice as wide so the rover can trigger it out of the way
+  viewbox.x -= viewbox.w /2;
+  viewbox.w += viewbox.w;
+  
+  switch (sentry.state) {
+    case meta.states.TOP:
+      // point viewbox to bottom of screen
+      viewbox.h = VIEW_HEIGHT - viewbox.y;
+      // if rover found, init state MOVE_DOWN    
+      if (collision.rectsOverlap(viewbox, rbox)) {
+        bots.init_state(bot_id, meta.states.MOVE_DOWN);
+        sentry.speed = 0; // we will build up to max
+      }
+      break;
+      
+    case meta.states.BOTTOM:
+      // point viewbox to top of screen
+      viewbox.h = viewbox.y + viewbox.h;
+      viewbox.y = 0;
+      // if rover found, init state MOVE_UP
+      if (collision.rectsOverlap(viewbox, rbox)) {
+        bots.init_state(bot_id, meta.states.MOVE_UP);
+        sentry.speed = 0; // we will build up to max
+      }
+      break;
+  
+    case meta.states.MOVE_DOWN:
+      // increase speed
+      sentry.speed += 0.4;
+      // if floor found, init state LANDING_BOTTOM
+      if (collision.collideDown(cbox, sentry.speed)) {
+        sentry.y = collision.snapDown(cbox.y, cbox.h) - meta.collision_margin.top;
+        bots.init_state(bot_id, meta.states.LANDING_BOTTOM);
+      }
+      else {
+        sentry.y += sentry.speed;
+      }
+      break;
+      
+    case meta.states.MOVE_UP:
+       // increase speed
+       sentry.speed -= 0.4;
+       // if ceiling found, init state LANDING_TOP
+       if (collision.collideUp(cbox, sentry.speed)) {
+         sentry.y = collision.snapUp(cbox.y) - meta.collision_margin.top;
+         bots.init_state(bot_id, meta.states.LANDING_TOP);
+       }
+       else {
+         sentry.y += sentry.speed;
+       }
+       break;
+       
+    case meta.states.LANDING_TOP:
+       // if animation finished, init state TOP       
+       if (sentry.anim.frame + sentry.anim.speed >= sentry.anim.max) {
+         bots.init_state(bot_id, meta.states.TOP);
+       }
+       break;
+       
+    case meta.states.LANDING_BOTTOM:
+       // if animation finished, init state BOTTOM
+       if (sentry.anim.frame + sentry.anim.speed >= sentry.anim.max) {
+         bots.init_state(bot_id, meta.states.BOTTOM);
+       }       
+       break;
+  }
+}
+
