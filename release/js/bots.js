@@ -186,7 +186,8 @@ bots.add = function(bot_type, grid_x, grid_y, state) {
   
   newbot.anim = animate.copy_anim(meta.base_anim[state]);
   newbot.speed = meta.max_speed[state];  
-    
+  newbot.counter = 0; // general purpose ticker
+  
   bots.sprite[bot_id] = {};  
   bots.set_collision(bot_id);  
 
@@ -199,6 +200,7 @@ bots.init_state = function(bot_id, state_id) {
   var anim = meta.base_anim[state_id];
   onebot.anim = animate.copy_anim(anim);
   onebot.speed = meta.max_speed[state_id];
+  onebot.counter = 0;
 }
 
 bots.load_room = function(room_x, room_y) {
@@ -442,12 +444,19 @@ bots.logic_sentry = function(bot_id) {
   var rbox = rover.get_collision_box();
   var viewbox = {x:cbox.x, y:cbox.y, w:cbox.w, h:cbox.h};
   
-  // make viewbox twice as wide so the rover can trigger it out of the way
-  viewbox.x -= viewbox.w /2;
-  viewbox.w += viewbox.w;
+  // will attack if the rover gets within a hitbox-width on either side
+  viewbox.x -= viewbox.w;
+  viewbox.w *= 3;
+
+  // counter is how many frames the bot is passive (right after landing)  
+  if (sentry.counter > 0) sentry.counter--;
   
   switch (sentry.state) {
     case meta.states.TOP:
+    
+      // don't attack if we have recently landed. 
+      if (sentry.counter > 0) break;
+    
       // point viewbox to bottom of screen
       viewbox.h = VIEW_HEIGHT - viewbox.y;
       // if rover found, init state MOVE_DOWN    
@@ -458,6 +467,10 @@ bots.logic_sentry = function(bot_id) {
       break;
       
     case meta.states.BOTTOM:
+    
+      // don't attack if we have recently landed. 
+      if (sentry.counter > 0) break;
+    
       // point viewbox to top of screen
       viewbox.h = viewbox.y + viewbox.h;
       viewbox.y = 0;
@@ -470,7 +483,7 @@ bots.logic_sentry = function(bot_id) {
   
     case meta.states.MOVE_DOWN:
       // increase speed
-      sentry.speed += 0.4;
+      sentry.speed += 0.35;
       // if floor found, init state LANDING_BOTTOM
       if (collision.collideDown(cbox, sentry.speed)) {
         sentry.y = collision.snapDown(cbox.y, cbox.h) - meta.collision_margin.top;
@@ -483,7 +496,7 @@ bots.logic_sentry = function(bot_id) {
       
     case meta.states.MOVE_UP:
        // increase speed
-       sentry.speed -= 0.4;
+       sentry.speed -= 0.35;
        // if ceiling found, init state LANDING_TOP
        if (collision.collideUp(cbox, sentry.speed)) {
          sentry.y = collision.snapUp(cbox.y) - meta.collision_margin.top;
@@ -498,6 +511,7 @@ bots.logic_sentry = function(bot_id) {
        // if animation finished, init state TOP       
        if (sentry.anim.frame + sentry.anim.speed >= sentry.anim.max) {
          bots.init_state(bot_id, meta.states.TOP);
+         sentry.counter = 60; // don't attack again for a sec
        }
        break;
        
@@ -505,6 +519,7 @@ bots.logic_sentry = function(bot_id) {
        // if animation finished, init state BOTTOM
        if (sentry.anim.frame + sentry.anim.speed >= sentry.anim.max) {
          bots.init_state(bot_id, meta.states.BOTTOM);
+         sentry.counter = 60; // don't attack again for a sec
        }       
        break;
   }
