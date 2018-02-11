@@ -1,5 +1,10 @@
 /**
  AI robots, including passive and enemy bots
+ 
+ TODO: make a bot base class and move each bot type to its own implementation file?
+ It was fine with just one file when all the AI moved back and forth (essentially the same logic)
+ But some bots need very different metadata for its own internal logic.
+ Makes sense that these would be internal static consts of an object.
  */
 
 var bots = {};
@@ -153,13 +158,14 @@ bots.load_metadata = function() {
   sentry.max_speed = [];
   sentry.max_speed[sentry.states.TOP] = 0;  
   sentry.max_speed[sentry.states.BOTTOM] = 0;
-  sentry.max_speed[sentry.states.MOVING_DOWN] = 8.0;
-  sentry.max_speed[sentry.states.MOVING_UP] = -8.0;
+  sentry.max_speed[sentry.states.MOVING_DOWN] = 12.0;
+  sentry.max_speed[sentry.states.MOVING_UP] = -12.0;
   sentry.max_speed[sentry.states.LANDING_TOP] = 0;
   sentry.max_speed[sentry.states.LANDING_BOTTOM] = 0;
   sentry.collision_margin = {top:1, bottom:1, left:4, right:4};  
   sentry.on_ground = true;
   sentry.hazardous_top = true;
+  sentry.acceleration = 1.1;
   
 }
 
@@ -209,8 +215,8 @@ bots.load_room = function(room_x, room_y) {
   var spawn;
   
   for (var i=0; i<bots.spawns.length; i++) {    
-	spawn = bots.spawns[i];
-	
+    spawn = bots.spawns[i];
+    
     // is this bot in this room?
     if (room_x == spawn.room_x && room_y == spawn.room_y) {
       bots.add(spawn.type, spawn.tile_x, spawn.tile_y, spawn.state);
@@ -251,23 +257,23 @@ bots.logic = function() {
       case bots.types.PISTON:
         bots.logic_piston(i);
         break;
-		
+        
       case bots.types.UFO:
-	    bots.logic_ufo(i);
-		break;
-		
-	  case bots.types.DRONE:
-	    bots.logic_drone(i);
-		break;
+        bots.logic_ufo(i);
+        break;
+        
+      case bots.types.DRONE:
+        bots.logic_drone(i);
+        break;
         
       case bots.types.SENTRY:
         bots.logic_sentry(i);
         break;
     }
-	
-	bots.set_collision(i);
-	bots.set_sprite(i);
-	
+    
+    bots.set_collision(i);
+    bots.set_sprite(i);
+    
   }
   
 }
@@ -295,8 +301,8 @@ bots.set_collision = function(bot_id) {
   bots.collision[bot_id] =
     {x:onebot.x + margins.left,
      y:onebot.y + margins.top,
-	 w:bots.frame_size - (margins.right + margins.left),
-	 h:bots.frame_size - (margins.top + margins.bottom)};
+     w:bots.frame_size - (margins.right + margins.left),
+     h:bots.frame_size - (margins.top + margins.bottom)};
 }
 
 bots.set_sprite = function(bot_id) {
@@ -408,8 +414,8 @@ bots.logic_ufo = function(bot_id) {
 
   if (wall_ahead || edge_ahead) {
     ufo.speed *= -1; // turn around
-	if (ufo.speed < 0) ufo.state = meta.states.LEFT;
-	else ufo.state = meta.states.RIGHT;
+    if (ufo.speed < 0) ufo.state = meta.states.LEFT;
+    else ufo.state = meta.states.RIGHT;
   }
   
   ufo.x += ufo.speed;
@@ -462,7 +468,7 @@ bots.logic_sentry = function(bot_id) {
       // if rover found, init state MOVE_DOWN    
       if (collision.rectsOverlap(viewbox, rbox)) {
         bots.init_state(bot_id, meta.states.MOVE_DOWN);
-        sentry.speed = 0; // we will build up to max
+        sentry.speed = 0.1; // we will build up to max
       }
       break;
       
@@ -477,17 +483,23 @@ bots.logic_sentry = function(bot_id) {
       // if rover found, init state MOVE_UP
       if (collision.rectsOverlap(viewbox, rbox)) {
         bots.init_state(bot_id, meta.states.MOVE_UP);
-        sentry.speed = 0; // we will build up to max
+        sentry.speed = -0.1; // we will build up to max
       }
       break;
   
     case meta.states.MOVE_DOWN:
+    
       // increase speed
-      sentry.speed += 0.35;
+      sentry.speed = sentry.speed * meta.acceleration;
+      if (sentry.speed > meta.max_speed[meta.states.MOVE_DOWN]) {
+        sentry.speed = meta.max_speed[meta.states.MOVE_DOWN];
+      }
+      
       // if floor found, init state LANDING_BOTTOM
       if (collision.collideDown(cbox, sentry.speed)) {
         sentry.y = collision.snapDown(cbox.y, cbox.h) - meta.collision_margin.top;
         bots.init_state(bot_id, meta.states.LANDING_BOTTOM);
+	imageset.vibrating = 2;
       }
       else {
         sentry.y += sentry.speed;
@@ -496,16 +508,21 @@ bots.logic_sentry = function(bot_id) {
       
     case meta.states.MOVE_UP:
        // increase speed
-       sentry.speed -= 0.35;
-       // if ceiling found, init state LANDING_TOP
-       if (collision.collideUp(cbox, sentry.speed)) {
-         sentry.y = collision.snapUp(cbox.y) - meta.collision_margin.top;
-         bots.init_state(bot_id, meta.states.LANDING_TOP);
-       }
-       else {
-         sentry.y += sentry.speed;
-       }
-       break;
+      sentry.speed = sentry.speed * meta.acceleration;
+      if (sentry.speed < meta.max_speed[meta.states.MOVE_UP]) {
+        sentry.speed = meta.max_speed[meta.states.MOVE_UP];
+      }
+      
+      // if ceiling found, init state LANDING_TOP
+      if (collision.collideUp(cbox, sentry.speed)) {
+        sentry.y = collision.snapUp(cbox.y) - meta.collision_margin.top;
+        bots.init_state(bot_id, meta.states.LANDING_TOP);
+	imageset.vibrating = 2;
+      }
+      else {
+        sentry.y += sentry.speed;
+      }
+      break;
        
     case meta.states.LANDING_TOP:
        // if animation finished, init state TOP       
